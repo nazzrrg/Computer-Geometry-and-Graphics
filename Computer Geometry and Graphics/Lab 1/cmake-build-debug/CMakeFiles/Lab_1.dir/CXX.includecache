@@ -9,4 +9,10 @@
 /Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 1/main.cpp
 iostream
 -
+fstream
+-
+filesystem
+-
+vector
+-
 
