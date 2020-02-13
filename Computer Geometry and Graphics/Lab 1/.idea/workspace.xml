@@ -34,15 +34,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="">
+    <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="Parsing buffer into header and data done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/CXX.includecache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/main.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Lab_1" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Lab_1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image.pnm" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rays2.pnm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/snail2.pnm" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +76,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
   <component name="RunManager">
-    <configuration name="Lab_1" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="image.pnm" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Lab_1" TARGET_NAME="Lab_1" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Lab_1" RUN_TARGET_NAME="Lab_1">
+    <configuration name="Lab_1" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="rays2.pnm" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Lab_1" TARGET_NAME="Lab_1" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Lab_1" RUN_TARGET_NAME="Lab_1">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -107,38 +104,68 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1581501249591</updated>
-      <workItem from="1581501255781" duration="4819000" />
+      <workItem from="1581501255781" duration="6489000" />
+      <workItem from="1581602458838" duration="6837000" />
     </task>
+    <task id="LOCAL-00001" summary="reading binary file complete">
+      <created>1581517101429</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1581517101429</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="reading binary file complete" />
+    <MESSAGE value="Parsing buffer into header and data done" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parsing buffer into header and data done" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581515977379">
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581610144683">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1581515977379" />
-    <state x="166" y="52" key="CommitChangelistDialog2" timestamp="1581517067154">
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1581610144683" />
+    <state x="166" y="52" key="CommitChangelistDialog2" timestamp="1581610860160">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="166" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1581517067154" />
-    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1581517067250">
+    <state x="166" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1581610860160" />
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1581610860198">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1581517067250" />
-    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1581517067249">
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1581610860198" />
+    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1581610860196">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1581517067249" />
-    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1581517067248">
+    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1581610860196" />
+    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1581610860195">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1581517067248" />
-    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1581517067249">
+    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1581610860195" />
+    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1581610860197">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1581517067249" />
+    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1581610860197" />
+    <state width="1398" height="399" key="GridCell.Tab.1.bottom" timestamp="1581610593715">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="399" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1581610593715" />
+    <state width="1398" height="399" key="GridCell.Tab.1.center" timestamp="1581610593714">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="399" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1581610593714" />
+    <state width="1398" height="399" key="GridCell.Tab.1.left" timestamp="1581610593713">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="399" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1581610593713" />
+    <state width="1398" height="399" key="GridCell.Tab.1.right" timestamp="1581610593715">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="399" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1581610593715" />
     <state x="333" y="168" key="RollbackChangesDialog" timestamp="1581516446023">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
@@ -151,5 +178,20 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="503" y="374" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1440.900@0.0.1440.900" timestamp="1581516403288" />
+    <state x="385" y="210" key="run.anything.popup" timestamp="1581610678787">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="210" key="run.anything.popup/0.0.1440.900@0.0.1440.900" timestamp="1581610678787" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/main.cpp</url>
+          <line>48</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
