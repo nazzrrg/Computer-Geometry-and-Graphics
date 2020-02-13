@@ -3,5 +3,5 @@
 | Argument | Description |
 |---|---|
 |**<input_file_name>**|Name of the input file in .npm format|
-|*<output_file_name>*|Name of the outnput file in .npm format|
-|*<action>*| 0 - Inversion|
+|**<output_file_name>**|Name of the outnput file in .npm format|
+|**<action>**| 0 - Inversion|
