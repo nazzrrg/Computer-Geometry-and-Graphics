@@ -4,4 +4,4 @@
 |---|---|
 |**<input_file_name>**|Name of the input file in .npm format|
 |**<output_file_name>**|Name of the outnput file in .npm format|
-|**<action>**|0 - Inversion\n1 - Horizontal mirroring\n2 - Vertical mirroring\n3 - 90° rotation clockwise\n4 - 90° rotation counterclockwise|
+|**<action>**|0 - Inversion<br>1 - Horizontal mirroring<br>2 - Vertical mirroring<br>3 - 90° rotation clockwise<br>4 - 90° rotation counterclockwise|
