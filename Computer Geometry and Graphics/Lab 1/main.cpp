@@ -16,31 +16,32 @@ public:
     std::vector<byte> ImageData;
     static std::vector<byte> ReadBinary(const char* path, uint64_t length) {
         std::ifstream is(path, std::ios::binary);
+         if (!is) {
+             std::cout << "Error when opening file." << std::endl;
+             exit(1);
+         }
         std::vector<byte> data(length);
         is.read(reinterpret_cast<char*>(data.data()), length);
-        if (is.gcount() == 0) {
-            // We have to check that reading from the stream actually worked.
-            // If any of the stream operation above failed then `gcount()`
-            // will return zero indicating that zero data was read from the stream
-            std::cout << "Не удалось открыть файл" << std::endl;
-            exit(0);
-        }
-
         return data;
     }
 
     static void WriteBinary(const char* path, const std::vector<byte>& vector) {
         std::ofstream os(path, std::ios::binary);
+         if (!os) {
+             std::cout << "Error creating output file!" << std::endl;
+             exit(1);
+         }
         os.write(reinterpret_cast<const char*>(&vector[0]), vector.size());
     }
 
-    PNMImage(const char* path) {
+    explicit PNMImage(const char* path) {
         //GET FILE SIZE
         std::error_code ec{};
         Size = std::filesystem::file_size(path, ec);
-        if (ec != std::error_code{})
-            std::cout << "error when accessing test file, size is: " << Size << " message: " << ec.message() << '\n';
-
+        if (ec != std::error_code{}) {
+            std::cout << "Error when accessing file. Message: " << ec.message() << '\n';
+            exit(1);
+        }
         //READ BUFFER
         Buffer = ReadBinary(path, Size);
 
@@ -104,6 +105,10 @@ public:
 
         //PARSE HEADER
         Type = numbers[0];
+         if (Type != 5 && Type != 6) {
+             std::cout << "Error: unable to read this file format!" << std::endl;
+             exit(1);
+         }
         Width = numbers[1];
         Height = numbers[2];
         ColourDepth = numbers[3];
@@ -115,7 +120,6 @@ public:
                   << "Height: "<< Height<< "px" << std::endl
                   << "Colour Depth: "<< ColourDepth << "bits" << std::endl;
     }
-
     void Export(const char* path) {
         std::cout << "Exporting..." << std::endl;
         Buffer.clear();
@@ -147,18 +151,18 @@ public:
 
         std::cout << "Export Successful!" << std::endl;
     }
-
     void Invert() {
+        std::cout << "Inverting..." << std::endl;
         for (auto & i : ImageData) {
             i = ~i;
         }
-        std::cout << "Inverting..." << std::endl;
+        std::cout << "Inverting finished!" << std::endl;
     }
-
     void Mirror(int direction) {
         // 0 - horizontal
         // 1 - vertical
         if (direction == 0) {
+            std::cout << "Mirroring horizontally..." << std::endl;
             if (Type == 5) {
                 uint64_t i,j;
                 for (i = 0; i < Height; i++) {
@@ -166,9 +170,7 @@ public:
                         std::swap(ImageData[i*Width + j], ImageData[i*Width + Width - 1 - j]);
                     }
                 }
-                return;
-            }
-            if (Type == 6) {
+            } else {
                 uint64_t i,j;
                 for (i = 0; i < Height; i++) {
                     for (j = 0; j < Width*3/2; j+=3) {
@@ -177,55 +179,34 @@ public:
                         std::swap(ImageData[i*Width*3 + j + 2], ImageData[i*Width*3 + Width*3 - j - 1]);
                     }
                 }
-                return;
             }
-            return;
+            std::cout << "Mirroring finished!" << std::endl;
         }
         if (direction == 1) {
+            std::cout << "Mirroring vertically..." << std::endl;
             if (Type == 5) {
                 uint64_t i,j;
                 for (i = 0; i < Width; i++) {
                     for (j = 0; j < Height/2; j++) {
                         std::swap(ImageData[j * Width + i], ImageData[(Height - 1 - j) * Width + i]);
-                        /*
-                         * 00 01 02 03 04 05 06
-                        0*  0  0  0  0  1  1  1
-                         * 07 08 09 10 11 12 13
-                        1*  1  0  1  0  0  1  0
-                         * 14 15 16 17 18 19 20
-                        2*  0  0  1  1  0  1  0
-                         *  */
                     }
                 }
-                return;
-            }
-            if (Type == 6) {
+            } else {
                 uint64_t i,j;
                 for (i = 0; i < Width*3; i++) {
                     for (j = 0; j < Height/2; j++) {
                         std::swap(ImageData[j * Width*3 + i], ImageData[(Height - 1 - j) * Width*3 + i]);
-                        /*
-                         *    00 01 02  03 04 05  06 07 08  09 10 11  12 13 14   width = 5
-                         * 0   0  3  3   7  8  9   3  1  2   1  5  4   0  f  5
-                         *    15 16 17  18 19 20  21 22 23  24 25 26  27 28 29
-                         * 1   0  3  6   4  7  3   2  8  2   9  e  e   3  f  f
-                         *    30 31 32  33 34 35  36 37 38  39 40 41  42 43 44
-                         * 2   6  3  5   f  f  f   e  c  a   f  e  7    a  b  3
-                         *
-                         * height = 3
-                         * */
                     }
                 }
-                return;
             }
-            return;
+            std::cout << "Mirroring finished!" << std::endl;
         }
-
     }
     void Rotate(int direction) {
         // 0 - clockwise
         // 1 - counterclockwise
         if (direction == 0) {
+            std::cout << "Rotating clockwise..." << std::endl;
             if (Type == 5) {
                 std::vector<byte> NewImageData;
                 uint64_t NewWidth, NewHeight;
@@ -240,9 +221,7 @@ public:
                 Width = NewWidth;
                 Height = NewHeight;
                 ImageData = NewImageData;
-                return;
-            }
-            if (Type == 6) {
+            } else {
                 std::vector<byte> NewImageData;
                 uint64_t NewWidth, NewHeight;
                 NewHeight = Width;
@@ -255,36 +234,14 @@ public:
                         NewImageData[j*3 + 2 + i*NewWidth*3] = ImageData[(Height - 1 - j)*Width*3 + i*3 + 2];
                     }
                 }
-
                 Width = NewWidth;
                 Height = NewHeight;
                 ImageData = NewImageData;
-                /*
-                         *    00 01 02  03 04 05  06 07 08  09 10 11  12 13 14   width = 5
-                         * 0   0  3  3   7  8  9   3  1  2   1  5  4   0  f  5
-                         *    15 16 17  18 19 20  21 22 23  24 25 26  27 28 29
-                         * 1   0  3  6   4  7  3   2  8  2   9  e  e   3  f  f
-                         *    30 31 32  33 34 35  36 37 38  39 40 41  42 43 44
-                         * 2   6  3  5   f  f  f   e  c  a   f  e  7    a  b  3
-                         *
-                         * height = 3
-                         *
-                         *    00 01 02  03 04 05  06 07 08
-                         *     6  3  5   0  3  6   0  3  3
-                         *    09 10 11  12 13 14  15 16 17
-                         *     f  f  f   4  7  3   7  8  9
-                         *    18 19 20  21 22 23  24 25 26
-                         *     e  c  a   2  8  2   3  1  2
-                         *    27 28 29  30 31 32  33 34 35
-                         *     f  e  7   9  e  e   1  5  4
-                         *    36 37 38  39 40 41  42 43 44
-                         *     a  b  3   3  f  f   0  f  5
-                         * */
-                return;
             }
-            return;
+            std::cout << "Rotating finished!" << std::endl;
         }
         if (direction == 1) {
+            std::cout << "Rotating counterclockwise..." << std::endl;
             if (Type == 5) {
                 std::vector<byte> NewImageData;
                 uint64_t NewWidth, NewHeight;
@@ -299,35 +256,7 @@ public:
                 Width = NewWidth;
                 Height = NewHeight;
                 ImageData = NewImageData;
-                /*
-                 * 00 01 02 03 04 05 06  width = 7
-                0*  0  0  0  0  1  1  1
-                 * 07 08 09 10 11 12 13
-                1*  1  0  1  0  0  1  0
-                 * 14 15 16 17 18 19 20
-                2*  0  0  1  1  0  1  0
-                 *
-                 * height = 3
-                 *
-                 * 00 01 02
-                 *  1  0  0
-                 * 03 04 05
-                 *  1  1  1
-                 * 06 07 08
-                 *  1  0  0
-                 * 09 10 11
-                 *  0  0  1
-                 * 12 13 14
-                 *  0  1  1
-                 * 15 16 17
-                 *  0  0  0
-                 * 18 19 20
-                 *  0  1  0
-                 * */
-
-                return;
-            }
-            if (Type == 6) {
+            } else {
                 std::vector<byte> NewImageData;
                 uint64_t NewWidth, NewHeight;
                 NewHeight = Width;
@@ -340,53 +269,26 @@ public:
                         NewImageData[(NewHeight - 1 - j)*NewWidth*3 + i*3 + 2] = ImageData[i*Width*3 + j*3 + 2];
                     }
                 }
-
                 Width = NewWidth;
                 Height = NewHeight;
                 ImageData = NewImageData;
-                /*
-                         *    00 01 02  03 04 05  06 07 08  09 10 11  12 13 14   width = 5
-                         * 0   0  3  3   7  8  9   3  1  2   1  5  4   0  f  5
-                         *    15 16 17  18 19 20  21 22 23  24 25 26  27 28 29
-                         * 1   0  3  6   4  7  3   2  8  2   9  e  e   3  f  f
-                         *    30 31 32  33 34 35  36 37 38  39 40 41  42 43 44
-                         * 2   6  3  5   f  f  f   e  c  a   f  e  7    a  b  3
-                         *
-                         * height = 3
-                         *
-                         *    00 01 02  03 04 05  06 07 08
-                         *     0  f  5   3  f  f   a  b  3
-                         *    09 10 11  12 13 14  15 16 17
-                         *     1  5  4   9  e  e   f  e  7
-                         *    18 19 20  21 22 23  24 25 26
-                         *     3  1  2   2  8  2   e  c  a
-                         *    27 28 29  30 31 32  33 34 35
-                         *     7  8  9   4  7  3   f  f  f
-                         *    36 37 38  39 40 41  42 43 44
-                         *     0  3  3   0  3  6   6  3  5
-                         * */
-                return;
             }
-            return;
+            std::cout << "Rotating finished!" << std::endl;
         }
     }
 };
 
 int main(int argc, char** argv) {
-
     if (argc < 3) {
-        std::cout << "Error: Not enough arguments!" << std::endl;
-        return 0;
+        std::cout << "Error: not enough arguments!" << std::endl;
+        exit(1);
     }
-
+    int l = strlen(argv[1]);
+    if (argv[1][l-1] != 'm' || argv[1][l-2] != 'n' || argv[1][l-3] != 'p' ||argv[1][l-4] != '.') {
+        std::cout << "Error: unable to read this file format!" << std::endl;
+        exit(1);
+    }
     PNMImage image(argv[1]);
-
-
-//    for (auto c : image.ImageData) {
-//        std::cout << c;
-//    }
-//    std::cout << std::endl;
-
     switch (argv[3][0]) {
         case '0':
             image.Invert();
@@ -404,18 +306,8 @@ int main(int argc, char** argv) {
             image.Rotate(1);
             break;
         default:
-            std::cout << "Ошибка, невозможно выполнить преобразование!"<< std::endl;
+            std::cout << "Error: unknown command!"<< std::endl;
     }
-
-//    for (auto c : image.ImageData) {
-//        std::cout << c;
-//    }
-
     image.Export(argv[2]);
-//
-//    unsigned char c = 0x08;
-//    printf("\n%d\n", c);
-//    c = ~c;
-//    printf("%d\n", c);
     return 0;
 }
