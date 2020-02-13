@@ -36,7 +36,6 @@
   <component name="ChangeListManager">
     <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +101,7 @@
       <option name="presentableId" value="Default" />
       <updated>1581501249591</updated>
       <workItem from="1581501255781" duration="6489000" />
-      <workItem from="1581602458838" duration="20812000" />
+      <workItem from="1581602458838" duration="21554000" />
     </task>
     <task id="LOCAL-00001" summary="reading binary file complete">
       <created>1581517101429</created>
@@ -125,7 +124,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581627839369</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Error handling added, comments removed.">
+      <created>1581629562055</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1581629562055</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,7 +141,9 @@
     <MESSAGE value="reading binary file complete" />
     <MESSAGE value="Parsing buffer into header and data done" />
     <MESSAGE value="Actions completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Actions completed" />
+    <MESSAGE value="Error handling added" />
+    <MESSAGE value="Error handling added, comments removed." />
+    <option name="LAST_COMMIT_MESSAGE" value="Error handling added, comments removed." />
   </component>
   <component name="WindowStateProjectService">
     <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581627776272">
