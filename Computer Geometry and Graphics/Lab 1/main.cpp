@@ -48,32 +48,21 @@ public:
         //PARSE BUFFER
         int flag = 0; // comment flag 0 - not in comment
                       // 1 - in comment
-                      // 2 - endline and/or spaces after header
-                      // 3 - in data
-        char c_prev = '0';
+                      // 2 - in data
         std::vector<byte> Header;
         std::vector<int> numbers;
         for (int i = 0; i < Buffer.size(); i++) {
             char c = Buffer[i];
-            if (flag == 3) {
-                ImageData.push_back(c);
-                continue;
-            }
-            if (!(c == '\r' || c == '\n' || c == ' ' || c == '\0') && flag == 2) {
-                flag = 3;
+            if (flag == 2) {
                 ImageData.push_back(c);
                 continue;
             }
             if (flag == 0) {
-                if (c == '#' && numbers.size() < 3) {
+                if (c == '#' && numbers.size() < 4) {
                     flag = 1; // in comment
                     continue;
                 }
                 if (c == '\r' || c == '\n' || c == ' ' || c == '\0') {
-                    if (numbers.size() > 3) {
-                        flag = 2;
-                        continue;
-                    }
                     int32_t number = -1;
                     int it = i - 1;
                     while (it > 0) {
@@ -86,17 +75,15 @@ public:
                         it--;
                     }
                     if (number != -1) numbers.push_back(number);
-
+                    if (numbers.size() == 4) {
+                        flag = 2;
+                    }
                     Header.push_back('-');
                     continue;
                 }
-                if (numbers.size() > 3) {
-                    flag = 3;
-                    ImageData.push_back(c);
-                    continue;
-                }
                 Header.push_back(c);
-            } else if (flag == 1 && numbers.size() < 4) {
+            }
+            if (flag == 1 && numbers.size() < 4) {
                 if (c == '\r' || c == '\n') {
                     flag = 0;
                 }
