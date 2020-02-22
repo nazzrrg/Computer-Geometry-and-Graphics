@@ -16,22 +16,47 @@ public:
     std::vector<byte> ImageData;
     static std::vector<byte> ReadBinary(const char* path, uint64_t length) {
         std::ifstream is(path, std::ios::binary);
-         if (!is) {
-             std::cout << "Error when opening file." << std::endl;
-             exit(1);
-         }
-        std::vector<byte> data(length);
-        is.read(reinterpret_cast<char*>(data.data()), length);
+        if (!is) {
+            std::cout << "Error when opening file." << std::endl;
+            exit(1);
+        }
+        std::vector<byte> data;
+        try {
+            data.resize(length);
+        } catch (std::exception& e) {
+            std::cout << "Buffer error, file too large!" << std::endl;
+            std::cerr << "Error: " << e.what( ) << std::endl;
+            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+            exit (1);
+        }
+
+        try {
+            is.read(reinterpret_cast<char*>(data.data()), length);
+        } catch (std::exception& e) {
+            std::cout << "Reading error, file could not be read properly!" << std::endl;
+            std::cerr << "Error: " << e.what( ) << std::endl;
+            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+            exit (1);
+        }
+
+        is.close();
         return data;
     }
 
     static void WriteBinary(const char* path, const std::vector<byte>& vector) {
         std::ofstream os(path, std::ios::binary);
-         if (!os) {
-             std::cout << "Error creating output file!" << std::endl;
-             exit(1);
-         }
-        os.write(reinterpret_cast<const char*>(&vector[0]), vector.size());
+        if (!os) {
+            std::cout << "Error creating output file!" << std::endl;
+            exit(1);
+        }
+        try {
+            os.write(reinterpret_cast<const char*>(&vector[0]), vector.size());
+        } catch (std::exception& e) {
+            std::cout << "Writing error, file could not be written properly!" << std::endl;
+            std::cerr << "Error: " << e.what( ) << std::endl;
+            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+            exit (1);
+        }
     }
 
     explicit PNMImage(const char* path) {
@@ -54,8 +79,14 @@ public:
         for (int i = 0; i < Buffer.size(); i++) {
             char c = Buffer[i];
             if (flag == 2) {
-                ImageData.push_back(c);
-                continue;
+                try {
+                    ImageData.push_back(c);
+                } catch (std::exception& e) {
+                    std::cout << "Buffer error!" << std::endl;
+                    std::cerr << "Error: " << e.what( ) << std::endl;
+                    std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                    exit (1);
+                }
             }
             if (flag == 0) {
                 if (c == '#' && numbers.size() < 4) {
@@ -74,14 +105,36 @@ public:
                         }
                         it--;
                     }
-                    if (number != -1) numbers.push_back(number);
+                    if (number != -1)
+                        try {
+                            numbers.push_back(number);
+                        } catch (std::exception& e) {
+                            std::cout << "Buffer error!" << std::endl;
+                            std::cerr << "Error: " << e.what() << std::endl;
+                            std::cerr << "Type " << typeid(e).name() << std::endl;
+                            exit(1);
+                        }
                     if (numbers.size() == 4) {
                         flag = 2;
                     }
-                    Header.push_back('-');
+                    try {
+                        Header.push_back('-');
+                    } catch (std::exception& e) {
+                        std::cout << "Buffer error!" << std::endl;
+                        std::cerr << "Error: " << e.what() << std::endl;
+                        std::cerr << "Type " << typeid(e).name() << std::endl;
+                        exit(1);
+                    }
                     continue;
                 }
-                Header.push_back(c);
+                try {
+                    Header.push_back(c);
+                } catch (std::exception& e) {
+                    std::cout << "Buffer error!" << std::endl;
+                    std::cerr << "Error: " << e.what() << std::endl;
+                    std::cerr << "Type " << typeid(e).name() << std::endl;
+                    exit(1);
+                }
             }
             if (flag == 1 && numbers.size() < 4) {
                 if (c == '\r' || c == '\n') {
@@ -110,28 +163,86 @@ public:
     void Export(const char* path) {
         std::cout << "Exporting..." << std::endl;
         Buffer.clear();
-        Buffer.push_back('P');
-        Buffer.push_back(char(Type + '0'));
-        Buffer.push_back('\n');
+
+        try {
+            Buffer.push_back('P');
+            Buffer.push_back(char(Type + '0'));
+            Buffer.push_back('\n');
+        } catch (std::exception& e) {
+            std::cout << "Buffer error during output!" << std::endl;
+            std::cerr << "Error: " << e.what( ) << std::endl;
+            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+            exit (1);
+        }
+
 
         std::string Width__ = std::to_string(Width);
         std::string Height__ = std::to_string(Height);
         std::string ColourDepth__ = std::to_string(ColourDepth);
 
         for (auto c : Width__) {
-            Buffer.push_back(c);
+            try{
+                Buffer.push_back(c);
+            } catch (std::exception& e) {
+                std::cout << "Buffer error during output!" << std::endl;
+                std::cerr << "Error: " << e.what( ) << std::endl;
+                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                exit (1);
+            }
         }
-        Buffer.push_back(' ');
+        try{
+            Buffer.push_back(' ');
+        } catch (std::exception& e) {
+            std::cout << "Buffer error during output!" << std::endl;
+            std::cerr << "Error: " << e.what( ) << std::endl;
+            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+            exit (1);
+        }
         for (auto c : Height__) {
-            Buffer.push_back(c);
+            try {
+                Buffer.push_back(c);
+            } catch (std::exception& e) {
+                std::cout << "Buffer error during output!" << std::endl;
+                std::cerr << "Error: " << e.what( ) << std::endl;
+                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                exit (1);
+            }
         }
-        Buffer.push_back('\n');
+        try {
+            Buffer.push_back('\n');
+        } catch (std::exception& e) {
+            std::cout << "Buffer error during output!" << std::endl;
+            std::cerr << "Error: " << e.what( ) << std::endl;
+            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+            exit (1);
+        }
         for (auto c : ColourDepth__) {
-            Buffer.push_back(c);
+            try{
+                Buffer.push_back(c);
+            } catch (std::exception& e) {
+                std::cout << "Buffer error during output!" << std::endl;
+                std::cerr << "Error: " << e.what( ) << std::endl;
+                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                exit (1);
+            }
         }
-        Buffer.push_back(' ');
+        try {
+            Buffer.push_back(' ');
+        } catch (std::exception& e) {
+            std::cout << "Buffer error during output!" << std::endl;
+            std::cerr << "Error: " << e.what( ) << std::endl;
+            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+            exit (1);
+        }
         for (auto c : ImageData) {
-            Buffer.push_back(c);
+            try {
+                Buffer.push_back(c);
+            } catch (std::exception& e) {
+                std::cout << "Buffer error during output!" << std::endl;
+                std::cerr << "Error: " << e.what( ) << std::endl;
+                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                exit (1);
+            }
         }
 
         WriteBinary(path, Buffer);
@@ -199,7 +310,14 @@ public:
                 uint64_t NewWidth, NewHeight;
                 NewHeight = Width;
                 NewWidth = Height;
-                NewImageData.resize(Width * Height);
+                try {
+                    NewImageData.resize(Width * Height);
+                } catch (std::exception& e) {
+                    std::cout << "Memory error during rotation!" << std::endl;
+                    std::cerr << "Error: " << e.what( ) << std::endl;
+                    std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                    exit (1);
+                }
                 for (uint64_t i = 0; i < Height; i++) {
                     for (uint64_t j = 0; j < Width; j++) {
                         NewImageData[(NewWidth - i - 1) + j*NewWidth] = ImageData[i*Width + j];
@@ -213,7 +331,14 @@ public:
                 uint64_t NewWidth, NewHeight;
                 NewHeight = Width;
                 NewWidth = Height;
-                NewImageData.resize(Width * Height * 9);
+                try {
+                    NewImageData.resize(Width * Height * 9);
+                } catch (std::exception& e) {
+                    std::cout << "Memory error during rotation!" << std::endl;
+                    std::cerr << "Error: " << e.what( ) << std::endl;
+                    std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                    exit (1);
+                }
                 for (uint64_t i = 0; i < Height; i++) {
                     for (uint64_t j = 0; j < Width; j++) {
                         NewImageData[j*3 + i*NewWidth*3] = ImageData[(Height - 1 - j)*Width*3 + i*3];
@@ -234,7 +359,14 @@ public:
                 uint64_t NewWidth, NewHeight;
                 NewHeight = Width;
                 NewWidth = Height;
-                NewImageData.resize(Width * Height);
+                try {
+                    NewImageData.resize(Width * Height);
+                } catch (std::exception& e) {
+                    std::cout << "Memory error during rotation!" << std::endl;
+                    std::cerr << "Error: " << e.what( ) << std::endl;
+                    std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                    exit (1);
+                }
                 for (uint64_t i = 0; i < Height; i++) {
                     for (uint64_t j = 0; j < Width; j++) {
                         NewImageData[j*NewWidth + i] = ImageData[(i + 1)*Width - 1 - j];
@@ -248,7 +380,14 @@ public:
                 uint64_t NewWidth, NewHeight;
                 NewHeight = Width;
                 NewWidth = Height;
-                NewImageData.resize(Width * Height * 9);
+                try {
+                    NewImageData.resize(Width * Height * 9);
+                } catch (std::exception& e) {
+                    std::cout << "Memory error during rotation!" << std::endl;
+                    std::cerr << "Error: " << e.what( ) << std::endl;
+                    std::cerr << "Type " << typeid( e ).name( ) << std::endl;
+                    exit (1);
+                }
                 for (uint64_t i = 0; i < Height; i++) {
                     for (uint64_t j = 0; j < Width; j++) {
                         NewImageData[(NewHeight - 1 - j)*NewWidth*3 + i*3] = ImageData[i*Width*3 + j*3];
