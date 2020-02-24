@@ -183,10 +183,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1582570840170" />
-    <state x="166" y="52" key="CommitChangelistDialog2" timestamp="1582557396257">
+    <state x="166" y="52" key="CommitChangelistDialog2" timestamp="1582571009794">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="166" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1582557396257" />
+    <state x="166" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1582571009794" />
     <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1582570936146">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
@@ -231,10 +231,11 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="333" y="168" key="RollbackChangesDialog/0.0.1440.900@0.0.1440.900" timestamp="1582460516016" />
-    <state x="320" y="190" key="Vcs.Push.Dialog.v2" timestamp="1582557399596">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="320" y="198" key="Vcs.Push.Dialog.v2" timestamp="1582571023834">
+      <screen x="0" y="23" width="1440" height="828" />
     </state>
     <state x="320" y="190" key="Vcs.Push.Dialog.v2/0.0.1440.900@0.0.1440.900" timestamp="1582557399596" />
+    <state x="320" y="198" key="Vcs.Push.Dialog.v2/0.23.1440.828@0.23.1440.828" timestamp="1582571023834" />
     <state x="397" y="282" key="com.intellij.ide.util.TipDialog" timestamp="1582458948132">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
