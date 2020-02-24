@@ -317,7 +317,7 @@ public:
                 NewHeight = Width;
                 NewWidth = Height;
                 try {
-                    NewImageData.resize(Width * Height * 9);
+                    NewImageData.resize(Width * Height * 3);
                 } catch (std::exception& e) {
                     std::cout << "Memory error during rotation!" << std::endl;
                     std::cerr << "Error: " << e.what( ) << std::endl;
