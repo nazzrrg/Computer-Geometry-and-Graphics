@@ -34,9 +34,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="">
+    <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="Exception handling added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/CXX.includecache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/main.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Lab_1" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Lab_1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/output.pnm" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/output.pnm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,6 +69,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="ObjectiveC" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -74,7 +78,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
   <component name="RunManager">
-    <configuration name="Lab_1" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="snail2.pnm output.pnm 2" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Lab_1" TARGET_NAME="Lab_1" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Lab_1" RUN_TARGET_NAME="Lab_1">
+    <configuration name="Lab_1" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="null.pnm output.pnm 4" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Lab_1" TARGET_NAME="Lab_1" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Lab_1" RUN_TARGET_NAME="Lab_1">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -105,7 +109,8 @@
       <workItem from="1581501255781" duration="6489000" />
       <workItem from="1581602458838" duration="21560000" />
       <workItem from="1581758650140" duration="2767000" />
-      <workItem from="1582387686088" duration="2371000" />
+      <workItem from="1582387686088" duration="4067000" />
+      <workItem from="1582458948361" duration="5125000" />
     </task>
     <task id="LOCAL-00001" summary="reading binary file complete">
       <created>1581517101429</created>
@@ -142,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581763388673</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Exception handling added">
+      <created>1582390707724</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1582390707724</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,69 +167,70 @@
     <MESSAGE value="Error handling added" />
     <MESSAGE value="Error handling added, comments removed." />
     <MESSAGE value="Minor changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor changes" />
+    <MESSAGE value="Exception handling added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Exception handling added" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582390624501">
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582556663930">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1582390624501" />
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1582556663930" />
     <state x="166" y="52" key="CommitChangelistDialog2" timestamp="1582390829814">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="166" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1582390829814" />
-    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1582390626258">
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1582556666321">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582390626258" />
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582556666321" />
     <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.23.1440.828@0.23.1440.828" timestamp="1581760441339" />
-    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1582390626257">
+    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1582556666320">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1582390626257" />
+    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1582556666320" />
     <state width="1398" height="245" key="GridCell.Tab.0.center/0.23.1440.828@0.23.1440.828" timestamp="1581760441338" />
-    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1582390626256">
+    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1582556666319">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1582390626256" />
+    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1582556666319" />
     <state width="1398" height="245" key="GridCell.Tab.0.left/0.23.1440.828@0.23.1440.828" timestamp="1581760441337" />
-    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1582390626257">
+    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1582556666321">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1582390626257" />
+    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1582556666321" />
     <state width="1398" height="245" key="GridCell.Tab.0.right/0.23.1440.828@0.23.1440.828" timestamp="1581760441339" />
-    <state width="1398" height="186" key="GridCell.Tab.1.bottom" timestamp="1581764024151">
+    <state width="1398" height="186" key="GridCell.Tab.1.bottom" timestamp="1582556642611">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1581764024151" />
+    <state width="1398" height="186" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582556642611" />
     <state width="1398" height="399" key="GridCell.Tab.1.bottom/0.23.1440.825@0.23.1440.825" timestamp="1581614510246" />
-    <state width="1398" height="186" key="GridCell.Tab.1.center" timestamp="1581764024149">
+    <state width="1398" height="186" key="GridCell.Tab.1.center" timestamp="1582556642607">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1581764024149" />
+    <state width="1398" height="186" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1582556642607" />
     <state width="1398" height="399" key="GridCell.Tab.1.center/0.23.1440.825@0.23.1440.825" timestamp="1581614510245" />
-    <state width="1398" height="186" key="GridCell.Tab.1.left" timestamp="1581764024149">
+    <state width="1398" height="186" key="GridCell.Tab.1.left" timestamp="1582556642606">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1581764024149" />
+    <state width="1398" height="186" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1582556642606" />
     <state width="1398" height="399" key="GridCell.Tab.1.left/0.23.1440.825@0.23.1440.825" timestamp="1581614510244" />
-    <state width="1398" height="186" key="GridCell.Tab.1.right" timestamp="1581764024150">
+    <state width="1398" height="186" key="GridCell.Tab.1.right" timestamp="1582556642608">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1581764024150" />
+    <state width="1398" height="186" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1582556642608" />
     <state width="1398" height="399" key="GridCell.Tab.1.right/0.23.1440.825@0.23.1440.825" timestamp="1581614510246" />
-    <state x="333" y="168" key="RollbackChangesDialog" timestamp="1581516446023">
+    <state x="333" y="168" key="RollbackChangesDialog" timestamp="1582460516016">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="333" y="168" key="RollbackChangesDialog/0.0.1440.900@0.0.1440.900" timestamp="1581516446023" />
-    <state x="397" y="282" key="com.intellij.ide.util.TipDialog" timestamp="1582387687449">
+    <state x="333" y="168" key="RollbackChangesDialog/0.0.1440.900@0.0.1440.900" timestamp="1582460516016" />
+    <state x="397" y="282" key="com.intellij.ide.util.TipDialog" timestamp="1582458948132">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="397" y="282" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1582387687449" />
-    <state x="503" y="374" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1581516403288">
+    <state x="397" y="282" key="com.intellij.ide.util.TipDialog/0.0.1440.900@0.0.1440.900" timestamp="1582458948132" />
+    <state x="503" y="374" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1582460512835">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="503" y="374" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1440.900@0.0.1440.900" timestamp="1581516403288" />
+    <state x="503" y="374" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1440.900@0.0.1440.900" timestamp="1582460512835" />
     <state x="385" y="210" key="run.anything.popup" timestamp="1581610678787">
       <screen x="0" y="0" width="1440" height="900" />
     </state>

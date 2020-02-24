@@ -2,6 +2,7 @@
 #include <fstream>
 #include <filesystem>
 #include <vector>
+#include <string> // fix 1
 #include <cmath>
 
 using byte = unsigned char;
@@ -72,21 +73,14 @@ public:
 
         //PARSE BUFFER
         int flag = 0; // comment flag 0 - not in comment
-                      // 1 - in comment
-                      // 2 - in data
+        // 1 - in comment
+        // 2 - in data
         std::vector<byte> Header;
         std::vector<int> numbers;
         for (int i = 0; i < Buffer.size(); i++) {
             char c = Buffer[i];
             if (flag == 2) {
-                try {
-                    ImageData.push_back(c);
-                } catch (std::exception& e) {
-                    std::cout << "Buffer error!" << std::endl;
-                    std::cerr << "Error: " << e.what( ) << std::endl;
-                    std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-                    exit (1);
-                }
+                ImageData.push_back(c);
             }
             if (flag == 0) {
                 if (c == '#' && numbers.size() < 4) {
@@ -100,41 +94,25 @@ public:
                         if ('0' <= Buffer[it] && Buffer[it] <= '9') {
                             if (number == -1) number++;
                             number += (Buffer[it] - '0') * (int)pow(10, i - it - 1);
-                        } else {
+                        }
+                        else if (Buffer[it] == '-') {
+                            std::cout << "Error: negative numbers in header!" << std::endl; // 10
+                            exit(1);
+                        }
+                        else {
                             break;
                         }
                         it--;
                     }
                     if (number != -1)
-                        try {
-                            numbers.push_back(number);
-                        } catch (std::exception& e) {
-                            std::cout << "Buffer error!" << std::endl;
-                            std::cerr << "Error: " << e.what() << std::endl;
-                            std::cerr << "Type " << typeid(e).name() << std::endl;
-                            exit(1);
-                        }
+                        numbers.push_back(number);
                     if (numbers.size() == 4) {
                         flag = 2;
                     }
-                    try {
-                        Header.push_back('-');
-                    } catch (std::exception& e) {
-                        std::cout << "Buffer error!" << std::endl;
-                        std::cerr << "Error: " << e.what() << std::endl;
-                        std::cerr << "Type " << typeid(e).name() << std::endl;
-                        exit(1);
-                    }
+                    Header.push_back('-');
                     continue;
                 }
-                try {
-                    Header.push_back(c);
-                } catch (std::exception& e) {
-                    std::cout << "Buffer error!" << std::endl;
-                    std::cerr << "Error: " << e.what() << std::endl;
-                    std::cerr << "Type " << typeid(e).name() << std::endl;
-                    exit(1);
-                }
+                Header.push_back(c);
             }
             if (flag == 1 && numbers.size() < 4) {
                 if (c == '\r' || c == '\n') {
@@ -145,13 +123,21 @@ public:
 
         //PARSE HEADER
         Type = numbers[0];
-         if (Type != 5 && Type != 6) {
-             std::cout << "Error: unable to read this file format!" << std::endl;
-             exit(1);
-         }
+        if ((Type != 5 && Type != 6) || Buffer[0] != 'P') { // fix 2, 8
+            std::cout << "Error: unable to read this file format!" << std::endl;
+            exit(1);
+        }
         Width = numbers[1];
         Height = numbers[2];
+        if (Width*Height*(Type - 4) != ImageData.size()) {
+            std::cout << "Error: Unexpected EOF!" << std::endl; // 11
+            exit(1);
+        }
         ColourDepth = numbers[3];
+        if (ColourDepth != 255) {
+            std::cout << "Error: unable to read this file format!" << std::endl; // 10
+            exit(1);
+        }
 
         //OUTPUT
         std::cout << "Type: P" << numbers[0] << std::endl
@@ -160,20 +146,13 @@ public:
                   << "Height: "<< Height<< "px" << std::endl
                   << "Colour Depth: "<< ColourDepth << "bits" << std::endl;
     }
-    void Export(const char* path) {
+    void Export(const char* path) { // fix 3, 4: для схожести функций ввода и вывода
         std::cout << "Exporting..." << std::endl;
         Buffer.clear();
 
-        try {
-            Buffer.push_back('P');
-            Buffer.push_back(char(Type + '0'));
-            Buffer.push_back('\n');
-        } catch (std::exception& e) {
-            std::cout << "Buffer error during output!" << std::endl;
-            std::cerr << "Error: " << e.what( ) << std::endl;
-            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-            exit (1);
-        }
+        Buffer.push_back('P');
+        Buffer.push_back(char(Type + '0'));
+        Buffer.push_back('\n');
 
 
         std::string Width__ = std::to_string(Width);
@@ -181,68 +160,25 @@ public:
         std::string ColourDepth__ = std::to_string(ColourDepth);
 
         for (auto c : Width__) {
-            try{
-                Buffer.push_back(c);
-            } catch (std::exception& e) {
-                std::cout << "Buffer error during output!" << std::endl;
-                std::cerr << "Error: " << e.what( ) << std::endl;
-                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-                exit (1);
-            }
+            Buffer.push_back(c);
         }
-        try{
-            Buffer.push_back(' ');
-        } catch (std::exception& e) {
-            std::cout << "Buffer error during output!" << std::endl;
-            std::cerr << "Error: " << e.what( ) << std::endl;
-            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-            exit (1);
-        }
+
+        Buffer.push_back(' ');
+
         for (auto c : Height__) {
-            try {
-                Buffer.push_back(c);
-            } catch (std::exception& e) {
-                std::cout << "Buffer error during output!" << std::endl;
-                std::cerr << "Error: " << e.what( ) << std::endl;
-                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-                exit (1);
-            }
+            Buffer.push_back(c);
         }
-        try {
-            Buffer.push_back('\n');
-        } catch (std::exception& e) {
-            std::cout << "Buffer error during output!" << std::endl;
-            std::cerr << "Error: " << e.what( ) << std::endl;
-            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-            exit (1);
-        }
+
+        Buffer.push_back('\n');
+
         for (auto c : ColourDepth__) {
-            try{
-                Buffer.push_back(c);
-            } catch (std::exception& e) {
-                std::cout << "Buffer error during output!" << std::endl;
-                std::cerr << "Error: " << e.what( ) << std::endl;
-                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-                exit (1);
-            }
+            Buffer.push_back(c);
         }
-        try {
-            Buffer.push_back(' ');
-        } catch (std::exception& e) {
-            std::cout << "Buffer error during output!" << std::endl;
-            std::cerr << "Error: " << e.what( ) << std::endl;
-            std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-            exit (1);
-        }
+
+        Buffer.push_back('\n'); // fix 5
+
         for (auto c : ImageData) {
-            try {
-                Buffer.push_back(c);
-            } catch (std::exception& e) {
-                std::cout << "Buffer error during output!" << std::endl;
-                std::cerr << "Error: " << e.what( ) << std::endl;
-                std::cerr << "Type " << typeid( e ).name( ) << std::endl;
-                exit (1);
-            }
+            Buffer.push_back(c);
         }
 
         WriteBinary(path, Buffer);
@@ -405,15 +341,15 @@ public:
 };
 
 int main(int argc, char** argv) {
-    if (argc < 3) {
-        std::cout << "Error: not enough arguments!" << std::endl;
+    if (argc < 4) { // 10
+        std::cout << "Error: not enough arguments!" << std::endl; // 11
         exit(1);
     }
-    int l = strlen(argv[1]);
-    if (argv[1][l-1] != 'm' || argv[1][l-2] != 'n' || argv[1][l-3] != 'p' ||argv[1][l-4] != '.') {
-        std::cout << "Error: unable to read this file format!" << std::endl;
+    if (argv[3][0] < '0' || argv[3][0] > '4') { // 10
+        std::cout << "Error: invalid command!" << std::endl;
         exit(1);
     }
+
     PNMImage image(argv[1]);
     switch (argv[3][0]) {
         case '0':
@@ -431,8 +367,6 @@ int main(int argc, char** argv) {
         case '4':
             image.Rotate(1);
             break;
-        default:
-            std::cout << "Error: unknown command!"<< std::endl;
     }
     image.Export(argv[2]);
     return 0;
