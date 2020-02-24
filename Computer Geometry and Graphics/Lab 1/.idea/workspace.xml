@@ -34,10 +34,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="Exception handling added">
+    <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Lab_1.dir/main.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Lab_1" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Lab_1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/output.pnm" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/output.pnm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
@@ -78,7 +76,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
   <component name="RunManager">
-    <configuration name="Lab_1" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="null.pnm output.pnm 4" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Lab_1" TARGET_NAME="Lab_1" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Lab_1" RUN_TARGET_NAME="Lab_1">
+    <configuration name="Lab_1" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="225H.ppm output.ppm 3" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Lab_1" TARGET_NAME="Lab_1" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Lab_1" RUN_TARGET_NAME="Lab_1">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -110,7 +108,8 @@
       <workItem from="1581602458838" duration="21560000" />
       <workItem from="1581758650140" duration="2767000" />
       <workItem from="1582387686088" duration="4067000" />
-      <workItem from="1582458948361" duration="5125000" />
+      <workItem from="1582458948361" duration="5542000" />
+      <workItem from="1582568158937" duration="2666000" />
     </task>
     <task id="LOCAL-00001" summary="reading binary file complete">
       <created>1581517101429</created>
@@ -154,13 +153,21 @@
       <option name="project" value="LOCAL" />
       <updated>1582390707724</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Fixes form Tutor">
+      <created>1582557396708</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1582557396708</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <MESSAGE value="reading binary file complete" />
     <MESSAGE value="Parsing buffer into header and data done" />
     <MESSAGE value="Actions completed" />
@@ -168,56 +175,57 @@
     <MESSAGE value="Error handling added, comments removed." />
     <MESSAGE value="Minor changes" />
     <MESSAGE value="Exception handling added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Exception handling added" />
+    <MESSAGE value="Fixes form Tutor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixes form Tutor" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582556663930">
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582570840170">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1582556663930" />
+    <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1582570840170" />
     <state x="166" y="52" key="CommitChangelistDialog2" timestamp="1582557396257">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="166" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1582557396257" />
-    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1582556666321">
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1582570936146">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582556666321" />
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582570936146" />
     <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.23.1440.828@0.23.1440.828" timestamp="1581760441339" />
-    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1582556666320">
+    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1582570936144">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1582556666320" />
+    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1582570936144" />
     <state width="1398" height="245" key="GridCell.Tab.0.center/0.23.1440.828@0.23.1440.828" timestamp="1581760441338" />
-    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1582556666319">
+    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1582570936143">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1582556666319" />
+    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1582570936143" />
     <state width="1398" height="245" key="GridCell.Tab.0.left/0.23.1440.828@0.23.1440.828" timestamp="1581760441337" />
-    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1582556666321">
+    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1582570936145">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1582556666321" />
+    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1582570936145" />
     <state width="1398" height="245" key="GridCell.Tab.0.right/0.23.1440.828@0.23.1440.828" timestamp="1581760441339" />
-    <state width="1398" height="186" key="GridCell.Tab.1.bottom" timestamp="1582556642611">
+    <state width="1398" height="373" key="GridCell.Tab.1.bottom" timestamp="1582570840835">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582556642611" />
+    <state width="1398" height="373" key="GridCell.Tab.1.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582570840835" />
     <state width="1398" height="399" key="GridCell.Tab.1.bottom/0.23.1440.825@0.23.1440.825" timestamp="1581614510246" />
-    <state width="1398" height="186" key="GridCell.Tab.1.center" timestamp="1582556642607">
+    <state width="1398" height="373" key="GridCell.Tab.1.center" timestamp="1582570840833">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1582556642607" />
+    <state width="1398" height="373" key="GridCell.Tab.1.center/0.0.1440.900@0.0.1440.900" timestamp="1582570840833" />
     <state width="1398" height="399" key="GridCell.Tab.1.center/0.23.1440.825@0.23.1440.825" timestamp="1581614510245" />
-    <state width="1398" height="186" key="GridCell.Tab.1.left" timestamp="1582556642606">
+    <state width="1398" height="373" key="GridCell.Tab.1.left" timestamp="1582570840832">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1582556642606" />
+    <state width="1398" height="373" key="GridCell.Tab.1.left/0.0.1440.900@0.0.1440.900" timestamp="1582570840832" />
     <state width="1398" height="399" key="GridCell.Tab.1.left/0.23.1440.825@0.23.1440.825" timestamp="1581614510244" />
-    <state width="1398" height="186" key="GridCell.Tab.1.right" timestamp="1582556642608">
+    <state width="1398" height="373" key="GridCell.Tab.1.right" timestamp="1582570840834">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1398" height="186" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1582556642608" />
+    <state width="1398" height="373" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1582570840834" />
     <state width="1398" height="399" key="GridCell.Tab.1.right/0.23.1440.825@0.23.1440.825" timestamp="1581614510246" />
     <state x="333" y="168" key="RollbackChangesDialog" timestamp="1582460516016">
       <screen x="0" y="0" width="1440" height="900" />
@@ -239,17 +247,5 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="385" y="210" key="run.anything.popup/0.0.1440.900@0.0.1440.900" timestamp="1581610678787" />
-  </component>
-  <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="CMakeRunConfiguration">
-        <watch expression="c" />
-        <watch expression="number" />
-        <watch expression="flag" />
-        <watch expression="Header" />
-        <watch expression="numbers" />
-        <watch expression="i" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

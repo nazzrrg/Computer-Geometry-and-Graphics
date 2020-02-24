@@ -129,7 +129,7 @@ public:
         }
         Width = numbers[1];
         Height = numbers[2];
-        if (Width*Height*(Type - 4) != ImageData.size()) {
+        if (Width*Height*(Type - 4 + ((Type + 1) % 2)) != ImageData.size()) { // 11
             std::cout << "Error: Unexpected EOF!" << std::endl; // 11
             exit(1);
         }
@@ -268,7 +268,7 @@ public:
                 NewHeight = Width;
                 NewWidth = Height;
                 try {
-                    NewImageData.resize(Width * Height * 9);
+                    NewImageData.resize(Width * Height * 3);
                 } catch (std::exception& e) {
                     std::cout << "Memory error during rotation!" << std::endl;
                     std::cerr << "Error: " << e.what( ) << std::endl;
@@ -277,9 +277,9 @@ public:
                 }
                 for (uint64_t i = 0; i < Height; i++) {
                     for (uint64_t j = 0; j < Width; j++) {
-                        NewImageData[j*3 + i*NewWidth*3] = ImageData[(Height - 1 - j)*Width*3 + i*3];
-                        NewImageData[j*3 + 1 + i*NewWidth*3] = ImageData[(Height - 1 - j)*Width*3 + i*3 + 1];
-                        NewImageData[j*3 + 2 + i*NewWidth*3] = ImageData[(Height - 1 - j)*Width*3 + i*3 + 2];
+                        NewImageData[(NewWidth - i - 1)*3 + j*NewWidth*3] = ImageData[j*3 + Width*3*i];
+                        NewImageData[(NewWidth - i - 1)*3 + j*NewWidth*3 + 1] = ImageData[j*3 + Width*3*i + 1];
+                        NewImageData[(NewWidth - i - 1)*3 + j*NewWidth*3 + 2] = ImageData[j*3 + Width*3*i + 2];
                     }
                 }
                 Width = NewWidth;
