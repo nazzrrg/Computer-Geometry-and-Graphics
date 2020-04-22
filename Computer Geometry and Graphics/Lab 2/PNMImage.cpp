@@ -347,12 +347,12 @@ bool PNMImage::isColor() {
     return Type == 6;
 }
 
-void PNMImage::drawLine(Point start, Point end, byte color, double thickness, double gamma) {
+void PNMImage::drawLine(Point start, Point end, byte color, double thiccness, double gamma) {
     if (!isGrey()) {
         std::cerr << "Error: Incorrect color!" << std::endl;
         exit(1);
     }
-    if (thickness <= 0)
+    if (thiccness <= 0)
         return;
 
     bool steep = abs(end.y - start.y) > abs(end.x - start.x);
@@ -392,34 +392,34 @@ void PNMImage::drawLine(Point start, Point end, byte color, double thickness, do
     double y = start.y + gradient * (round(start.x) - start.x);
 
     for(int plotX = round(start.x); plotX <= round(end.x); plotX++) {
-        for (int plotY = intPart(y - (thickness - 1) / 2); plotY <= intPart(y + (thickness + 1) / 2); plotY++)
+        for (int plotY = intPart(y - (thiccness - 1) / 2); plotY <= intPart(y + (thiccness + 1) / 2); plotY++)
         {
-            plot(plotX, plotY, std::min(1.0, (thickness + 1.0) / 2.0 - fabs(y - plotY)));
+            plot(plotX, plotY, std::min(1.0, (thiccness + 1.0) / 2.0 - fabs(y - plotY)));
         }
         y += gradient;
     }
 
     Point plotStart = {round(start.x), round(start.y)};
-    for (int plotX = round(start.x) - thickness / 2; plotX < round(start.x); plotX++) {
+    for (int plotX = round(start.x) - thiccness / 2; plotX < round(start.x); plotX++) {
         y = start.y + gradient * (plotX - start.x);
-        for (int plotY = int(y - (thickness - 1) / 2.0); plotY <= int(y + (thickness + 1) / 2.0); plotY++) {
-            plot(plotX, plotY, std::min(1.0, (thickness + 0.5) / 2.0 -
+        for (int plotY = int(y - (thiccness - 1) / 2.0); plotY <= int(y + (thiccness + 1) / 2.0); plotY++) {
+            plot(plotX, plotY, std::min(1.0, (thiccness + 0.5) / 2.0 -
                                         distance({(double) plotX, (double) plotY}, {plotStart.x, plotStart.y})));
         }
     }
 
     Point plotEnd = {round(end.x), round(end.y)};
-    for (int plotX = round(end.x) + 1; plotX <= round(end.x) + thickness / 2; plotX++) {
+    for (int plotX = round(end.x) + 1; plotX <= round(end.x) + thiccness / 2; plotX++) {
         y = start.y + gradient * (plotX - start.x);
-        for (int plotY = int(y - (thickness - 1) / 2.0); plotY <= int(y + (thickness + 1) / 2.0); plotY++) {
-            plot(plotX, plotY, std::min(1.0, (thickness + 0.5) / 2.0 -
+        for (int plotY = int(y - (thiccness - 1) / 2.0); plotY <= int(y + (thiccness + 1) / 2.0); plotY++) {
+            plot(plotX, plotY, std::min(1.0, (thiccness + 0.5) / 2.0 -
                                         distance({(double) plotX, (double) plotY}, {plotEnd.x, plotEnd.y})));
         }
     }
 }
 
-void PNMImage::drawLine(double x0, double y0, double x1, double y1, byte color, double thickness, double gamma) {
-    drawLine({x0, y0}, {x1, y1}, color, thickness, gamma);
+void PNMImage::drawLine(double x0, double y0, double x1, double y1, byte color, double thiccness, double gamma) {
+    drawLine({x0, y0}, {x1, y1}, color, thiccness, gamma);
 }
 
 //    что-то тут не так? яркость и фон - в гамме то есть сначала надо перевести ее в линию а затем обратно в гамму
