@@ -389,7 +389,7 @@ void PNMImage::drawLine(Point start, Point end, byte color, double thickness, do
     double y = start.y + gradient * (round(start.x) - start.x);
 
     for(int plotX = round(start.x); plotX <= round(end.x); plotX++) {
-        for (int plotY = intPart(y - (thickness - 1) / 2); plotY <= intPart(y - (thickness - 1) / 2 + thickness); plotY++)
+        for (int plotY = intPart(y - (thickness - 1) / 2); plotY <= intPart(y + (thickness + 1) / 2); plotY++)
         {
             plot(plotX, plotY, std::min(1.0, (thickness + 1.0) / 2.0 - fabs(y - plotY)));
         }
@@ -399,7 +399,7 @@ void PNMImage::drawLine(Point start, Point end, byte color, double thickness, do
     Point plotStart = {round(start.x), round(start.y)};
     for (int plotX = round(start.x) - thickness / 2; plotX < round(start.x); plotX++) {
         y = start.y + gradient * (plotX - start.x);
-        for (int plotY = int(y - (thickness - 1) / 2.0); plotY <= int(y - (thickness - 1) / 2.0 + thickness); plotY++) {
+        for (int plotY = int(y - (thickness - 1) / 2.0); plotY <= int(y + (thickness + 1) / 2.0); plotY++) {
             plot(plotX, plotY, std::min(1.0, (thickness + 0.5) / 2.0 -
                                         distance({(double) plotX, (double) plotY}, {plotStart.x, plotStart.y})));
         }
@@ -408,7 +408,7 @@ void PNMImage::drawLine(Point start, Point end, byte color, double thickness, do
     Point plotEnd = {round(end.x), round(end.y)};
     for (int plotX = round(end.x) + 1; plotX <= round(end.x) + thickness / 2; plotX++) {
         y = start.y + gradient * (plotX - start.x);
-        for (int plotY = int(y - (thickness - 1) / 2.0); plotY <= int(y - (thickness - 1) / 2.0 + thickness); plotY++) {
+        for (int plotY = int(y - (thickness - 1) / 2.0); plotY <= int(y + (thickness + 1) / 2.0); plotY++) {
             plot(plotX, plotY, std::min(1.0, (thickness + 0.5) / 2.0 -
                                         distance({(double) plotX, (double) plotY}, {plotEnd.x, plotEnd.y})));
         }
