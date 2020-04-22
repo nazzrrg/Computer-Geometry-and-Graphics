@@ -446,5 +446,5 @@ void PNMImage::drawPoint(int x, int y, double transparency, byte color, double g
     double picColorLinear = pow(picColorGamma, gamma);
     double c = transparency * picColorLinear + (1 - transparency) * lineColorLinear;
     double cGamma = pow(c, 1.0 / gamma);
-    ImageData[Width * y + x] = cGamma;
+    ImageData[Width * y + x] = 255 * cGamma;
 }
