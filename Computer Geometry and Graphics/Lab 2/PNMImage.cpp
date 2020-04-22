@@ -5,6 +5,9 @@
 #include "PNMImage.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <filesystem>
+#include <string>
 #include <vector>
 #include <cmath>
 
@@ -128,7 +131,7 @@ PNMImage::PNMImage(const char* path) {
     }
     ColourDepth = numbers[3];
     if (ColourDepth != 255) {
-        std::cout << "Error: unable to read this file format!" << std::endl;
+        std::cerr << "Error: unable to read this file format!" << std::endl;
         exit(1);
     }
 
@@ -419,22 +422,29 @@ void PNMImage::drawLine(double x0, double y0, double x1, double y1, byte color, 
     drawLine({x0, y0}, {x1, y1}, color, thickness, gamma);
 }
 
+//    что-то тут не так? яркость и фон - в гамме то есть сначала надо перевести ее в линию а затем обратно в гамму
 void PNMImage::drawPoint(int x, int y, double transparency, byte color) {
     transparency = std::max(std::min(transparency, 1.0), 0.0);
     if (y < 0 || y >= Height || x < 0 || x >= Width)
         return;
-    double lineColorLinear = color / 255.0;
+    double lineColorSRGB = color / 255.0;
+    double lineColorLinear = lineColorSRGB <= 0.04045 ? lineColorSRGB / 12.92 : pow((lineColorSRGB + 0.055) / 1.055, 2.4);
     double picColorSRGB = ImageData[Width * y + x] / 255.0;
     double picColorLinear = picColorSRGB <= 0.04045 ? picColorSRGB / 12.92 : pow((picColorSRGB + 0.055) / 1.055, 2.4);
-    double c = (1 - transparency) * lineColorLinear + transparency * picColorLinear;
-    double csrgb = c <= 0.0031308 ? 12.92 * c : 1.055 * pow(c, 1 / 2.4) - 0.055;
-    ImageData[Width * y + x] = 255 * csrgb;
+    double c = transparency * picColorLinear + (1 - transparency) * lineColorLinear;
+    double cSRGB = c <= 0.0031308 ? 12.92 * c : 1.055 * pow(c, 1 / 2.4) - 0.055;
+    ImageData[Width * y + x] = 255 * cSRGB;
 }
 
-void PNMImage::drawPoint(int x, int y, double transparency, byte color, double gamma) {
+void PNMImage::drawPoint(int x, int y, double transparency, byte color, double gamma) { // видимо не умею считать вернул в развернутый вариант
     transparency = std::max(std::min(transparency, 1.0), 0.0);
     if (y < 0 || y >= Height || x < 0 || x >= Width)
         return;
-    ImageData[Width * y + x] = 255 * pow((transparency * ImageData[Width * y + x] + color * (1 - transparency)) / 255.0,
-                                    (1.0 / gamma - 1.0) * (1.0 - transparency) + 1.0);
+    double lineColorGamma = color / 255.0;
+    double lineColorLinear = pow(lineColorGamma, gamma);
+    double picColorGamma = ImageData[Width * y + x] / 255.0;
+    double picColorLinear = pow(picColorGamma, gamma);
+    double c = transparency * picColorLinear + (1 - transparency) * lineColorLinear;
+    double cGamma = pow(c, 1.0 / gamma);
+    ImageData[Width * y + x] = cGamma;
 }

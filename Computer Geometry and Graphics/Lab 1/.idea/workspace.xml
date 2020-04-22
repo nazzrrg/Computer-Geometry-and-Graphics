@@ -37,12 +37,6 @@
   <component name="ChangeListManager">
     <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab 2/PNMImage.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab 2/PNMImage.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/CMakeFiles/Lab_2.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/CMakeFiles/Lab_2.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/CMakeFiles/Lab_2.dir/PNMImage.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/CMakeFiles/Lab_2.dir/PNMImage.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/CMakeFiles/Lab_2.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/CMakeFiles/Lab_2.dir/main.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/Lab_2" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/Lab_2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/output.pnm" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab 2/cmake-build-debug/output.pnm" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
