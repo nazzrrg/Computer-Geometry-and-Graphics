@@ -7,6 +7,7 @@
     <option name="USE_IDEA_PROXY_SETTINGS" value="true" />
     <option name="INSPECTIONS_BUILD_TYPE_IDS" />
     <option name="DUPLICATES_BUILD_TYPE_IDS" />
+    <option name="ENABLE_SUITABLE_CONFIGURATION_CACHING" value="true" />
     <option name="COVERAGE_SETTINGS" />
     <option name="TEST_STATUS_ENABLED" value="true" />
     <option name="TEST_STATUS_SHOW_SUCCESSFUL" value="false" />
@@ -35,7 +36,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44621f47-1f2f-4a88-885b-f1854fa5e8af" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lab 2/PNMImage.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Lab 2/PNMImage.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,6 +113,7 @@
       <workItem from="1582568158937" duration="2762000" />
       <workItem from="1582574178575" duration="64000" />
       <workItem from="1582577557349" duration="5000" />
+      <workItem from="1587579946418" duration="309000" />
     </task>
     <task id="LOCAL-00001" summary="reading binary file complete">
       <created>1581517101429</created>
