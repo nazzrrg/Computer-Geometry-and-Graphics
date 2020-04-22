@@ -169,7 +169,7 @@ void PNMImage::Export(const char* path) {
         Buffer.push_back(c);
     }
 
-    Buffer.push_back('\n'); // fix 5
+    Buffer.push_back('\n'); // fix 5 for mac ' '
 
     for (auto c : ImageData) {
         Buffer.push_back(c);
