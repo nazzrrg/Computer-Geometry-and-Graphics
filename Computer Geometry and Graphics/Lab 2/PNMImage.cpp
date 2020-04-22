@@ -136,15 +136,15 @@ PNMImage::PNMImage(const char* path) {
     }
 
     //OUTPUT
-    std::cout << "Type: P" << numbers[0] << std::endl
-              << "Size: "  << Size << " bytes" << std::endl
-              << "Width: " << Width << "px" << std::endl
-              << "Height: "<< Height<< "px" << std::endl
-              << "Colour Depth: "<< ColourDepth << "bits" << std::endl;
+//    std::cout << "Type: P" << numbers[0] << std::endl
+//              << "Size: "  << Size << " bytes" << std::endl
+//              << "Width: " << Width << "px" << std::endl
+//              << "Height: "<< Height<< "px" << std::endl
+//              << "Colour Depth: "<< ColourDepth << "bits" << std::endl;
 }
 
 void PNMImage::Export(const char* path) {
-    std::cout << "Exporting..." << std::endl;
+//    std::cout << "Exporting..." << std::endl;
     Buffer.clear();
 
     Buffer.push_back('P');
@@ -180,7 +180,7 @@ void PNMImage::Export(const char* path) {
 
     WriteBinary(path, Buffer);
 
-    std::cout << "Export Successful!" << std::endl;
+//    std::cout << "Export Successful!" << std::endl;
 }
 
 void PNMImage::Invert() {
