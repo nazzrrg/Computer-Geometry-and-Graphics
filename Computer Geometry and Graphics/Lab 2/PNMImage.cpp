@@ -347,14 +347,14 @@ bool PNMImage::isColor() {
     return Type == 6;
 }
 
-void PNMImage::thiccOctant(int x0, int y0, int x1, int y1, int thiccness, byte color, double gamma) {
+void PNMImage::thiccOctant(Point start, Point end, int thiccness, byte color, double gamma) {
+    int dx = (int)round(end.x - start.x);
+    int dy = (int)round(end.y - start.y);
+    int pError = 0;
+    int error = 0;
+    int y = (int)round(start.y);
+    int x = (int)round(start.x);
     if (steep) { // by y
-        int dx = x1 - x0;
-        int dy = y1 - y0;
-        int pError = 0;
-        int error = 0;
-        int y = y0;
-        int x = x0;
         int length = dy + 1;
         if (dx < 0) { // down left
             dx *= -1; ////
@@ -395,12 +395,6 @@ void PNMImage::thiccOctant(int x0, int y0, int x1, int y1, int thiccness, byte c
             }
         }
     } else { // by x (traditional)
-        int dx = x1 - x0;
-        int dy = y1 - y0;
-        int pError = 0;
-        int error = 0;
-        int y = y0;
-        int x = x0;
         int length = dx + 1;
         if (dy < 0) { // right up
             dy *= -1;
@@ -731,31 +725,32 @@ void PNMImage::drawThickLine(double x0, double y0, double x1, double y1, byte co
         std::swap(start.y, end.y);
     }
 
+    Point vec = {(end.y - start.y) * 0.5 * thiccness / sqrt((end.y - start.y)*(end.y - start.y) + (start.x - end.x)*(start.x - end.x))
+            , (start.x - end.x) * 0.5 * thiccness / sqrt((end.y - start.y)*(end.y - start.y) + (start.x - end.x)*(start.x - end.x))};
+    Point A = {start.x + vec.x,start.y + vec.y};
+    Point B = {end.x + vec.x, end.y + vec.y};
+    Point C = {end.x - vec.x, end.y - vec.y};
+    Point D = {start.x - vec.x, start.y - vec.y};
+    Edge e1 = {A, B};
+    Edge e2 = {B, C};
+    Edge e3 = {C, D};
+    Edge e4 = {D, A};
+    line = {e1, e2, e3, e4}; // vector line
 
-
-    thiccOctant(round(start.x), round(start.y), round(end.x), round(end.y), thiccness, color, gamma);
+    thiccOctant(start, end, thiccness, color, gamma); // drawing raster line
 }
 
-double PNMImage::opacity(double x1, double y1, double x2, double y2, double x0, double y0, int pos) { //// разобраться и дописать(!)
+double PNMImage::opacity(double x, double y) { //// разобраться и дописать(!)
+    Rect pixel = {{{x-0.5, y-0.5}, {x+0.5, y-0.5}}
+                , {{x+0.5, y-0.5}, {x+0.5, y+0.5}}
+                , {{x+0.5, y+0.5}, {x-0.5, y+0.5}}
+                , {{x-0.5, y+0.5}, {x-0.5, y-0.5}}};
 
+
+
+
+
+    return 0;
 }
 
-//void PNMImage::drawLine(double x0, double y0, double x1, double y1, byte color, double gamma) {
-//    int xs = (int)round(x0);
-//    int ys = (int)round(y0);
-//    int xe = (int)round(x1);
-//    int ye = (int)round(y1);
-//    int dx = xe - xs;
-//    int dy = ye - ys;
-//    int y = ys;
-//    int error = 0;
-//    for (int x = xs; x < xe; x++) {
-//        drawPoint(x, y, 1, color, gamma);
-//        error += 2*dy;
-//        if (error > dx) {
-//            y++;
-//            error -= 2*dx;
-//        }
-//    }
-//}
 

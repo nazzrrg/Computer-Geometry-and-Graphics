@@ -26,17 +26,16 @@ private:
     uint64_t Size, Width, Height, ColourDepth;
     uint8_t Type;
     struct Point start, end;
-    struct Edge line;
+    struct Rect line;
     bool steep;
-    bool top;
 
 
     void pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWidth, int widthInit, byte color, double gamma);
-    void thiccOctant(int x0, int y0, int x1, int y1, int thiccness, byte color, double gamma);
+    void thiccOctant(Point start, Point end, int thiccness, byte color, double gamma);
 
     void drawPoint(int, int, double, byte, double);
 
-    double opacity(double x1, double y1, double x2, double y2, double x0, double y0, int pos);
+    double opacity(double x, double y);
 
 public:
 
@@ -57,11 +56,6 @@ public:
     bool isGrey();
 
     bool isColor();
-
-    /*
-    void drawLine(Point start, Point end, byte color, double thickness = 1.0, double gamma = 0);
-    void drawLine(double x0, double y0, double x1, double y1, byte color, double thickness, double gamma = 0);
-     */
 
     void drawThickLine(double, double, double, double, byte, double, double);
 };
