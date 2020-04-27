@@ -531,7 +531,9 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             int Ediag = -2 * dx;
             int Esquare = 2 * dy;
             int error = -errorInit; //// - перед init
+
             int tk = dx + dy + widthInit;//// + перед W
+
             while (tk <= wthr) {
                 drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
@@ -567,12 +569,10 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             int error = errorInit;
 
             int tk = dx + dy - widthInit;
-//        int tk = dx + dy + widthInit;
             while (tk <= wthr) {
                 drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
                     x--;
-//                x++;
                     error += Ediag;
                     tk += 2 * dy;
                 }
@@ -585,7 +585,6 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             y = y0;
             error = -errorInit;
             tk = dx + dy + widthInit;
-//        tk = dx + dy - widthInit;
 
             while (tk <= wthr) {
                 drawPoint(x, y, 1, color, gamma);
@@ -727,36 +726,14 @@ void PNMImage::drawThickLine(double x0, double y0, double x1, double y1, byte co
     start = {x0,y0};
     end = {x1,y1};
     steep = abs(end.y - start.y) > abs(end.x - start.x);
-//    if (!steep && start.x > end.x) {
-//        std::swap(start.x, end.x);
-//        std::swap(start.y, end.y);
-//    }
-//    if (steep && start.y > end.y) {
-//        std::swap(start.x, end.x);
-//        std::swap(start.y, end.y);
-//    }
+    if ((steep && (start.y > end.y)) || (!steep && (start.x > end.x))) {
+        std::swap(start.x, end.x);
+        std::swap(start.y, end.y);
+    }
 
 
 
     thiccOctant(round(start.x), round(start.y), round(end.x), round(end.y), thiccness, color, gamma);
-    /*
-    beg = {x0, y0};
-    end = {x1, y1};
-    drawLine(beg.x, beg.y, end.x, end.y, color, gamma);
-    double dx = x1 - x0;
-    double dy = y1 - y0;
-    double k = 0.5/sqrt(dx*dx + dy*dy);
-
-    double accmThk = 1;
-    Point startP = beg, endP = end;
-    while (accmThk <= thiccness/2) {
-        startP.x += k * dy;
-        startP.y -= k * dx;
-        endP.x += k * dy;
-        endP.y -= k * dx;
-        drawLine(startP.x, startP.y, endP.x, endP.y, color, gamma);
-        accmThk += 0.5;
-    } */
 }
 
 double PNMImage::opacity(double x1, double y1, double x2, double y2, double x0, double y0, int pos) { //// разобраться и дописать(!)
