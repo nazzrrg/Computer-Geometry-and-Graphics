@@ -25,9 +25,9 @@ int main(int argc, char* argv[]) {
     PNMImage picture(inputFileName);
 
     if (gammaDefined)
-        picture.drawLine(x0, y0, x1, y1, color, thickness, gamma);
+        picture.drawThickLine(x0, y0, x1, y1, color, thickness, gamma);
     else
-        picture.drawLine(x0, y0, x1, y1, color, thickness);
+        picture.drawThickLine(x0, y0, x1, y1, color, thickness, 0);
 
     picture.Export(outputFileName);
 

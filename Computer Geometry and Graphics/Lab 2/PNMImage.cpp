@@ -184,18 +184,18 @@ void PNMImage::Export(const char* path) {
 }
 
 void PNMImage::Invert() {
-    std::cout << "Inverting..." << std::endl;
+//    std::cout << "Inverting..." << std::endl;
     for (auto & i : ImageData) {
         i = ~i;
     }
-    std::cout << "Inverting finished!" << std::endl;
+//    std::cout << "Inverting finished!" << std::endl;
 }
 
 void PNMImage::Mirror(int direction) {
     // 0 - horizontal
     // 1 - vertical
     if (direction == 0) {
-        std::cout << "Mirroring horizontally..." << std::endl;
+//        std::cout << "Mirroring horizontally..." << std::endl;
         if (Type == 5) {
             uint64_t i,j;
             for (i = 0; i < Height; i++) {
@@ -213,10 +213,10 @@ void PNMImage::Mirror(int direction) {
                 }
             }
         }
-        std::cout << "Mirroring finished!" << std::endl;
+//        std::cout << "Mirroring finished!" << std::endl;
     }
     if (direction == 1) {
-        std::cout << "Mirroring vertically..." << std::endl;
+//        std::cout << "Mirroring vertically..." << std::endl;
         if (Type == 5) {
             uint64_t i,j;
             for (i = 0; i < Width; i++) {
@@ -232,7 +232,7 @@ void PNMImage::Mirror(int direction) {
                 }
             }
         }
-        std::cout << "Mirroring finished!" << std::endl;
+//        std::cout << "Mirroring finished!" << std::endl;
     }
 }
 
@@ -240,7 +240,7 @@ void PNMImage::Rotate(int direction) {
     // 0 - clockwise
     // 1 - counterclockwise
     if (direction == 0) {
-        std::cout << "Rotating clockwise..." << std::endl;
+//        std::cout << "Rotating clockwise..." << std::endl;
         if (Type == 5) {
             std::vector<byte> NewImageData;
             uint64_t NewWidth, NewHeight;
@@ -286,10 +286,10 @@ void PNMImage::Rotate(int direction) {
             Height = NewHeight;
             ImageData = NewImageData;
         }
-        std::cout << "Rotating finished!" << std::endl;
+//        std::cout << "Rotating finished!" << std::endl;
     }
     if (direction == 1) {
-        std::cout << "Rotating counterclockwise..." << std::endl;
+//        std::cout << "Rotating counterclockwise..." << std::endl;
         if (Type == 5) {
             std::vector<byte> NewImageData;
             uint64_t NewWidth, NewHeight;
@@ -335,7 +335,7 @@ void PNMImage::Rotate(int direction) {
             Height = NewHeight;
             ImageData = NewImageData;
         }
-        std::cout << "Rotating finished!" << std::endl;
+//        std::cout << "Rotating finished!" << std::endl;
     }
 }
 
@@ -347,14 +347,228 @@ bool PNMImage::isColor() {
     return Type == 6;
 }
 
-void PNMImage::drawLine(Point start, Point end, byte color, double thiccness, double gamma) {
-    if (!isGrey()) {
-        std::cerr << "Error: Incorrect color!" << std::endl;
-        exit(1);
+void PNMImage::thiccOctant(int x0, int y0, int x1, int y1, int thiccness, byte color, double gamma) {
+    if (steep) { // by y
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+        int pError = 0;
+        int error = 0;
+        int y = y0;
+        int x = x0;
+        int length = dy + 1;
+        if (dx < 0) { // down left
+            int threshold = dy - 2 * dx;
+            int Ediag = -2 * dy;
+            int Esquare = 2 * dx;
+            for (int p = 0; p < length; p++) {
+                pOctant(x, y, dx, dy, pError, thiccness, error, color, gamma);
+                if (error > threshold) {
+                    x--;
+                    error += Ediag;
+                    if (pError > threshold) {
+                        pOctant(x, y, dx, dy, pError + Ediag + Esquare, thiccness, error, color, gamma);
+                        pError += Ediag;
+                    }
+                    pError += Esquare;
+                }
+                error += Esquare;
+                y++;
+            }
+        } else { // down right
+            int threshold = dy - 2 * dx;
+            int Ediag = -2 * dy;
+            int Esquare = 2 * dx;
+            for (int p = 0; p < length; p++) {
+                pOctant(x, y, dx, dy, pError, thiccness, error, color, gamma);
+                if (error > threshold) {
+                    x++;
+                    error += Ediag;
+                    if (pError > threshold) {
+                        pOctant(x, y, dx, dy, pError + Ediag + Esquare, thiccness, error, color, gamma);
+                        pError += Ediag;
+                    }
+                    pError += Esquare;
+                }
+                error += Esquare;
+                y++;
+            }
+        }
+    } else { // by x (traditional)
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+        int pError = 0;
+        int error = 0;
+        int y = y0;
+        int x = x0;
+        int length = dx + 1;
+        if (dy < 0) { // right up
+            dy *= -1;
+            int threshold = dx - 2 * dy;////!!! перед dy - -- выше
+            int Ediag = -2 * dx;
+            int Esquare = 2 * dy;////!!! перед dy - -- выше
+            for (int p = 0; p < length; p++) {
+//                drawPoint(x, y, 1, color, gamma);
+                pOctant(x, y, dx, -dy, pError, thiccness, error, color, gamma);
+                if (error > threshold) {
+                    y--;
+                    error += Ediag;
+                    if (pError > threshold) {
+                        pOctant(x, y, dx, -dy, pError + Ediag + Esquare, thiccness, error, color, gamma);
+                        pError += Ediag;
+                    }
+                    pError += Esquare;
+                }
+                error += Esquare;
+                x++;
+            }
+        } else { // right down
+            int threshold = dx - 2 * dy;
+            int Ediag = -2 * dx;
+            int Esquare = 2 * dy;
+            for (int p = 0; p < length; p++) {
+                pOctant(x, y, dx, dy, pError, thiccness, error, color, gamma);
+                if (error > threshold) {
+                    y++;
+                    error += Ediag;
+                    if (pError > threshold) {
+                        pOctant(x, y, dx, dy, pError + Ediag + Esquare, thiccness, error, color, gamma);
+                        pError += Ediag;
+                    }
+                    pError += Esquare;
+                }
+                error += Esquare;
+                x++;
+            }
+        }
     }
-    if (thiccness <= 0)
-        return;
+}
 
+void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWidth, int widthInit, byte color, double gamma) {
+//    double wthr = 2 * ((int) floor((sideWidth / 2)) + 1) * sqrt(dx * dx + dy * dy);
+//    int error = errorInit;
+
+    if (steep) { // by y
+        int threshold = dy - 2 * dx;
+        int Ediag = -2 * dy;
+        int Esquare = 2 * dx;
+
+        double wthr = 2 * ((int) floor((sideWidth / 2)) + 1) * sqrt(dx * dx + dy * dy);
+        int y = y0;////
+        int error = errorInit;
+        int x = x0;////
+        int tk = dx + dy - widthInit;
+
+        while (tk <= wthr) {
+            drawPoint(x, y, 1, color, gamma);////
+            if (error > threshold) {
+                y--;
+                error += Ediag;
+                tk += 2 * dx;
+            }
+            error += Esquare;
+            x++;
+            tk += 2 * dy;
+        }
+
+        x = x0;////
+        y = y0;////
+        error = -errorInit;
+        tk = dx + dy + widthInit;
+
+        while (tk <= wthr) {
+            drawPoint(x, y, 1, color, gamma);////
+            if (error > threshold) {
+                y++;
+                error += Ediag;
+                tk += 2 * dx;
+            }
+            error += Esquare;
+            x--;
+            tk += 2 * dy;
+        }
+    } else { // by x traditional
+        double wthr = 2 * ((int) floor((sideWidth / 2)) + 1) * sqrt(dx * dx + dy * dy);
+        int y = y0;
+        int x = x0;
+
+        if (dy < 0) {
+            dy *= -1; //// -1*dy
+            int threshold = dx - 2 * dy;
+            int Ediag = -2 * dx;
+            int Esquare = 2 * dy;
+            int error = -errorInit; //// - перед init
+            int tk = dx + dy + widthInit;//// + перед W
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);
+                if (error > threshold) {
+                    x++;//// ++
+                    error += Ediag;
+                    tk += 2 * dy;
+                }
+                error += Esquare;
+                y++;
+                tk += 2 * dx;
+            }
+
+            x = x0;
+            y = y0;
+            error = errorInit; //// + перед init
+            tk = dx + dy - widthInit; //// - перед W
+
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);
+                if (error > threshold) {
+                    x--;//// --
+                    error += Ediag;
+                    tk += 2 * dy;
+                }
+                error += Esquare;
+                y--;
+                tk += 2 * dx;
+            }
+        } else {
+            int threshold = dx - 2 * dy;
+            int Ediag = -2 * dx;
+            int Esquare = 2 * dy;
+            int error = errorInit;
+
+            int tk = dx + dy - widthInit;
+//        int tk = dx + dy + widthInit;
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);
+                if (error > threshold) {
+                    x--;
+//                x++;
+                    error += Ediag;
+                    tk += 2 * dy;
+                }
+                error += Esquare;
+                y++;
+                tk += 2 * dx;
+            }
+
+            x = x0;
+            y = y0;
+            error = -errorInit;
+            tk = dx + dy + widthInit;
+//        tk = dx + dy - widthInit;
+
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);
+                if (error > threshold) {
+                    x++;
+                    error += Ediag;
+                    tk += 2 * dy;
+                }
+                error += Esquare;
+                y--;
+                tk += 2 * dx;
+            }
+        }
+    }
+}
+/*
+void PNMImage::drawLine(Point start, Point end, byte color, double thiccness, double gamma) {
     bool steep = abs(end.y - start.y) > abs(end.x - start.x);
 
     auto intPart = [](double x) -> int {return (int) x;};
@@ -387,16 +601,28 @@ void PNMImage::drawLine(Point start, Point end, byte color, double thiccness, do
 
     double dx = end.x - start.x;
     double dy = end.y - start.y;
+
     double gradient = dy / dx;
 
     double y = start.y + gradient * (round(start.x) - start.x);
 
-    for(int plotX = round(start.x); plotX <= round(end.x); plotX++) {
-        for (int plotY = intPart(y - (thiccness - 1) / 2); plotY <= intPart(y + (thiccness + 1) / 2); plotY++)
-        {
-            plot(plotX, plotY, std::min(1.0, (thiccness + 1.0) / 2.0 - fabs(y - plotY)));
+
+
+    if (gradient == 1) {
+        for(int plotX = round(start.x); plotX <= round(end.x); plotX++) {
+            for (int plotY = intPart(y - (thiccness - 1) / 2); plotY <= intPart(y + (thiccness + 1) / 2); plotY++)
+            {
+                plot(plotX, plotY, std::min(1.0, (thiccness + 1.0) / 2.0 - fabs(y - plotY)));
+            }
+            y += gradient;
         }
-        y += gradient;
+    } else {
+        for (int plotX = round(start.x); plotX <= round(end.x); plotX++) {
+            for (int plotY = intPart(y - (thiccness - 1) / 2); plotY <= intPart(y + (thiccness + 1) / 2); plotY++) {
+                plot(plotX, plotY, std::min(1.0, (thiccness + 1.0) / 2.0 - fabs(y - plotY)));
+            }
+            y += gradient;
+        }
     }
 
     Point plotStart = {round(start.x), round(start.y)};
@@ -419,32 +645,106 @@ void PNMImage::drawLine(Point start, Point end, byte color, double thiccness, do
 }
 
 void PNMImage::drawLine(double x0, double y0, double x1, double y1, byte color, double thiccness, double gamma) {
-    drawLine({x0, y0}, {x1, y1}, color, thiccness, gamma);
+    if (!isGrey()) {
+        std::cerr << "Error: Incorrect color!" << std::endl;
+        exit(1);
+    }
+    if (thiccness <= 0)
+        return;
+//    drawLine({x0, y0}, {x1, y1}, color, thiccness, gamma);
+    thiccOctant(x0, y0, x1, y1, thiccness, color, gamma);
 }
+ */
 
 //    что-то тут не так? яркость и фон - в гамме то есть сначала надо перевести ее в линию а затем обратно в гамму
-void PNMImage::drawPoint(int x, int y, double transparency, byte color) {
-    transparency = std::max(std::min(transparency, 1.0), 0.0);
+void PNMImage::drawPoint(int x, int y, double opacity, byte color, double gamma) { // видимо не умею считать вернул в развернутый вариант
+    opacity = std::max(std::min(opacity, 1.0), 0.0);
     if (y < 0 || y >= Height || x < 0 || x >= Width)
         return;
-    double lineColorSRGB = color / 255.0;
-    double lineColorLinear = lineColorSRGB <= 0.04045 ? lineColorSRGB / 12.92 : pow((lineColorSRGB + 0.055) / 1.055, 2.4);
-    double picColorSRGB = ImageData[Width * y + x] / 255.0;
-    double picColorLinear = picColorSRGB <= 0.04045 ? picColorSRGB / 12.92 : pow((picColorSRGB + 0.055) / 1.055, 2.4);
-    double c = transparency * picColorLinear + (1 - transparency) * lineColorLinear;
-    double cSRGB = c <= 0.0031308 ? 12.92 * c : 1.055 * pow(c, 1 / 2.4) - 0.055;
-    ImageData[Width * y + x] = 255 * cSRGB;
+    if (opacity == 0) {
+        return;
+    }
+    if (gamma == 0) {
+        double lineColorSRGB = color / 255.0;
+        double lineColorLinear = lineColorSRGB <= 0.04045 ? lineColorSRGB / 12.92 : pow((lineColorSRGB + 0.055) / 1.055, 2.4);
+        double picColorSRGB = ImageData[Width * y + x] / 255.0;
+        double picColorLinear = picColorSRGB <= 0.04045 ? picColorSRGB / 12.92 : pow((picColorSRGB + 0.055) / 1.055, 2.4);
+        double c = (1 - opacity) * picColorLinear + opacity * lineColorLinear;
+        double cSRGB = c <= 0.0031308 ? 12.92 * c : 1.055 * pow(c, 1 / 2.4) - 0.055;
+        ImageData[Width * y + x] = 255 * cSRGB;
+    } else {
+        double lineColorGamma = color / 255.0;
+        double lineColorLinear = pow(lineColorGamma, gamma);
+        double picColorGamma = ImageData[Width * y + x] / 255.0;
+        double picColorLinear = pow(picColorGamma, gamma);
+        double c = (1 - opacity) * picColorLinear + opacity * lineColorLinear;
+        double cGamma = pow(c, 1.0 / gamma);
+        ImageData[Width * y + x] = 255 * cGamma;
+    }
 }
 
-void PNMImage::drawPoint(int x, int y, double transparency, byte color, double gamma) { // видимо не умею считать вернул в развернутый вариант
-    transparency = std::max(std::min(transparency, 1.0), 0.0);
-    if (y < 0 || y >= Height || x < 0 || x >= Width)
+void PNMImage::drawThickLine(double x0, double y0, double x1, double y1, byte color, double thiccness, double gamma) {
+    if (!isGrey()) {
+        std::cerr << "Error: Incorrect color!" << std::endl;
+        exit(1);
+    }
+    if (thiccness <= 0)
         return;
-    double lineColorGamma = color / 255.0;
-    double lineColorLinear = pow(lineColorGamma, gamma);
-    double picColorGamma = ImageData[Width * y + x] / 255.0;
-    double picColorLinear = pow(picColorGamma, gamma);
-    double c = transparency * picColorLinear + (1 - transparency) * lineColorLinear;
-    double cGamma = pow(c, 1.0 / gamma);
-    ImageData[Width * y + x] = 255 * cGamma;
+    start = {x0,y0};
+    end = {x1,y1};
+    steep = abs(end.y - start.y) > abs(end.x - start.x);
+//    if (!steep && start.x > end.x) {
+//        std::swap(start.x, end.x);
+//        std::swap(start.y, end.y);
+//    }
+//    if (steep && start.y > end.y) {
+//        std::swap(start.x, end.x);
+//        std::swap(start.y, end.y);
+//    }
+
+
+
+    thiccOctant(round(start.x), round(start.y), round(end.x), round(end.y), thiccness, color, gamma);
+    /*
+    beg = {x0, y0};
+    end = {x1, y1};
+    drawLine(beg.x, beg.y, end.x, end.y, color, gamma);
+    double dx = x1 - x0;
+    double dy = y1 - y0;
+    double k = 0.5/sqrt(dx*dx + dy*dy);
+
+    double accmThk = 1;
+    Point startP = beg, endP = end;
+    while (accmThk <= thiccness/2) {
+        startP.x += k * dy;
+        startP.y -= k * dx;
+        endP.x += k * dy;
+        endP.y -= k * dx;
+        drawLine(startP.x, startP.y, endP.x, endP.y, color, gamma);
+        accmThk += 0.5;
+    } */
 }
+
+double PNMImage::opacity(double x1, double y1, double x2, double y2, double x0, double y0, int pos) { //// разобраться и дописать(!)
+
+}
+
+//void PNMImage::drawLine(double x0, double y0, double x1, double y1, byte color, double gamma) {
+//    int xs = (int)round(x0);
+//    int ys = (int)round(y0);
+//    int xe = (int)round(x1);
+//    int ye = (int)round(y1);
+//    int dx = xe - xs;
+//    int dy = ye - ys;
+//    int y = ys;
+//    int error = 0;
+//    for (int x = xs; x < xe; x++) {
+//        drawPoint(x, y, 1, color, gamma);
+//        error += 2*dy;
+//        if (error > dx) {
+//            y++;
+//            error -= 2*dx;
+//        }
+//    }
+//}
+
