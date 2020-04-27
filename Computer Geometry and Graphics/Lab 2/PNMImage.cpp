@@ -357,16 +357,17 @@ void PNMImage::thiccOctant(int x0, int y0, int x1, int y1, int thiccness, byte c
         int x = x0;
         int length = dy + 1;
         if (dx < 0) { // down left
-            int threshold = dy - 2 * dx;
+            dx *= -1; ////
+            int threshold = dy - 2 * dx;//// выше
             int Ediag = -2 * dy;
-            int Esquare = 2 * dx;
+            int Esquare = 2 * dx;//// выше
             for (int p = 0; p < length; p++) {
-                pOctant(x, y, dx, dy, pError, thiccness, error, color, gamma);
+                pOctant(x, y, -dx, dy, pError, thiccness, error, color, gamma);////
                 if (error > threshold) {
                     x--;
                     error += Ediag;
                     if (pError > threshold) {
-                        pOctant(x, y, dx, dy, pError + Ediag + Esquare, thiccness, error, color, gamma);
+                        pOctant(x, y, -dx, dy, pError + Ediag + Esquare, thiccness, error, color, gamma);////
                         pError += Ediag;
                     }
                     pError += Esquare;
@@ -408,12 +409,12 @@ void PNMImage::thiccOctant(int x0, int y0, int x1, int y1, int thiccness, byte c
             int Esquare = 2 * dy;////!!! перед dy - -- выше
             for (int p = 0; p < length; p++) {
 //                drawPoint(x, y, 1, color, gamma);
-                pOctant(x, y, dx, -dy, pError, thiccness, error, color, gamma);
+                pOctant(x, y, dx, -dy, pError, thiccness, error, color, gamma);//// -dy
                 if (error > threshold) {
                     y--;
                     error += Ediag;
                     if (pError > threshold) {
-                        pOctant(x, y, dx, -dy, pError + Ediag + Esquare, thiccness, error, color, gamma);
+                        pOctant(x, y, dx, -dy, pError + Ediag + Esquare, thiccness, error, color, gamma);//// -dy
                         pError += Ediag;
                     }
                     pError += Esquare;
@@ -444,53 +445,86 @@ void PNMImage::thiccOctant(int x0, int y0, int x1, int y1, int thiccness, byte c
 }
 
 void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWidth, int widthInit, byte color, double gamma) {
-//    double wthr = 2 * ((int) floor((sideWidth / 2)) + 1) * sqrt(dx * dx + dy * dy);
-//    int error = errorInit;
+    double wthr = 2 * ((int) floor((sideWidth / 2)) + 1) * sqrt(dx * dx + dy * dy);
+    int y = y0;
+    int x = x0;
 
     if (steep) { // by y
-        int threshold = dy - 2 * dx;
-        int Ediag = -2 * dy;
-        int Esquare = 2 * dx;
+        if (dx < 0) {
+            dx *=-1; ////
+            int threshold = dy - 2 * dx;
+            int Ediag = -2 * dy;
+            int Esquare = 2 * dx;
+            int error = -errorInit;////
 
-        double wthr = 2 * ((int) floor((sideWidth / 2)) + 1) * sqrt(dx * dx + dy * dy);
-        int y = y0;////
-        int error = errorInit;
-        int x = x0;////
-        int tk = dx + dy - widthInit;
+            int tk = dx + dy + widthInit;////
 
-        while (tk <= wthr) {
-            drawPoint(x, y, 1, color, gamma);////
-            if (error > threshold) {
-                y--;
-                error += Ediag;
-                tk += 2 * dx;
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);
+                if (error > threshold) {
+                    y++;////
+                    error += Ediag;
+                    tk += 2 * dx;
+                }
+                error += Esquare;
+                x++;
+                tk += 2 * dy;
             }
-            error += Esquare;
-            x++;
-            tk += 2 * dy;
-        }
 
-        x = x0;////
-        y = y0;////
-        error = -errorInit;
-        tk = dx + dy + widthInit;
+            x = x0;////
+            y = y0;////
+            error = errorInit;////
+            tk = dx + dy - widthInit;////
 
-        while (tk <= wthr) {
-            drawPoint(x, y, 1, color, gamma);////
-            if (error > threshold) {
-                y++;
-                error += Ediag;
-                tk += 2 * dx;
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);
+                if (error > threshold) {
+                    y--;////
+                    error += Ediag;
+                    tk += 2 * dx;
+                }
+                error += Esquare;
+                x--;
+                tk += 2 * dy;
             }
-            error += Esquare;
-            x--;
-            tk += 2 * dy;
+        } else {
+            int threshold = dy - 2 * dx;
+            int Ediag = -2 * dy;
+            int Esquare = 2 * dx;
+            int error = errorInit;
+
+            int tk = dx + dy - widthInit;
+
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);////
+                if (error > threshold) {
+                    y--;
+                    error += Ediag;
+                    tk += 2 * dx;
+                }
+                error += Esquare;
+                x++;
+                tk += 2 * dy;
+            }
+
+            x = x0;////
+            y = y0;////
+            error = -errorInit;
+            tk = dx + dy + widthInit;
+
+            while (tk <= wthr) {
+                drawPoint(x, y, 1, color, gamma);////
+                if (error > threshold) {
+                    y++;
+                    error += Ediag;
+                    tk += 2 * dx;
+                }
+                error += Esquare;
+                x--;
+                tk += 2 * dy;
+            }
         }
     } else { // by x traditional
-        double wthr = 2 * ((int) floor((sideWidth / 2)) + 1) * sqrt(dx * dx + dy * dy);
-        int y = y0;
-        int x = x0;
-
         if (dy < 0) {
             dy *= -1; //// -1*dy
             int threshold = dx - 2 * dy;
