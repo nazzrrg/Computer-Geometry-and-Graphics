@@ -137,17 +137,9 @@ PNMImage::PNMImage(const char* path) {
         std::cerr << "Error: unable to read this file format!" << std::endl;
         exit(1);
     }
-
-    //OUTPUT
-//    std::cout << "Type: P" << numbers[0] << std::endl
-//              << "Size: "  << Size << " bytes" << std::endl
-//              << "Width: " << Width << "px" << std::endl
-//              << "Height: "<< Height<< "px" << std::endl
-//              << "Colour Depth: "<< ColourDepth << "bits" << std::endl;
 }
 
 void PNMImage::Export(const char* path) {
-//    std::cout << "Exporting..." << std::endl;
     Buffer.clear();
 
     Buffer.push_back('P');
@@ -182,23 +174,18 @@ void PNMImage::Export(const char* path) {
     }
 
     WriteBinary(path, Buffer);
-
-//    std::cout << "Export Successful!" << std::endl;
 }
 
 void PNMImage::Invert() {
-//    std::cout << "Inverting..." << std::endl;
     for (auto & i : ImageData) {
         i = ~i;
     }
-//    std::cout << "Inverting finished!" << std::endl;
 }
 
 void PNMImage::Mirror(int direction) {
     // 0 - horizontal
     // 1 - vertical
     if (direction == 0) {
-//        std::cout << "Mirroring horizontally..." << std::endl;
         if (Type == 5) {
             uint64_t i,j;
             for (i = 0; i < Height; i++) {
@@ -216,10 +203,8 @@ void PNMImage::Mirror(int direction) {
                 }
             }
         }
-//        std::cout << "Mirroring finished!" << std::endl;
     }
     if (direction == 1) {
-//        std::cout << "Mirroring vertically..." << std::endl;
         if (Type == 5) {
             uint64_t i,j;
             for (i = 0; i < Width; i++) {
@@ -235,7 +220,6 @@ void PNMImage::Mirror(int direction) {
                 }
             }
         }
-//        std::cout << "Mirroring finished!" << std::endl;
     }
 }
 
@@ -243,7 +227,6 @@ void PNMImage::Rotate(int direction) {
     // 0 - clockwise
     // 1 - counterclockwise
     if (direction == 0) {
-//        std::cout << "Rotating clockwise..." << std::endl;
         if (Type == 5) {
             std::vector<byte> NewImageData;
             uint64_t NewWidth, NewHeight;
@@ -289,10 +272,8 @@ void PNMImage::Rotate(int direction) {
             Height = NewHeight;
             ImageData = NewImageData;
         }
-//        std::cout << "Rotating finished!" << std::endl;
     }
     if (direction == 1) {
-//        std::cout << "Rotating counterclockwise..." << std::endl;
         if (Type == 5) {
             std::vector<byte> NewImageData;
             uint64_t NewWidth, NewHeight;
@@ -338,7 +319,6 @@ void PNMImage::Rotate(int direction) {
             Height = NewHeight;
             ImageData = NewImageData;
         }
-//        std::cout << "Rotating finished!" << std::endl;
     }
 }
 
@@ -502,7 +482,7 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
 
             while (tk <= wthr) {
                 drawPoint(x, y, opacity(x, y), color, gamma);
-//                drawPoint(x, y, 1, color, gamma);////
+//                drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
                     y--;
                     error += Ediag;
@@ -520,7 +500,7 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
 
             while (tk <= wthr) {
                 drawPoint(x, y, opacity(x, y), color, gamma);
-//                drawPoint(x, y, 1, color, gamma);////
+//                drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
                     y++;
                     error += Ediag;
@@ -665,11 +645,14 @@ void PNMImage::drawThickLine(double x0, double y0, double x1, double y1, byte co
     Edge e3 = {C, D};
     Edge e4 = {D, A};
     line = {e1, e2, e3, e4}; // vector line
-//    std::cout << "Point A: (" << A.x << ", " << A.y << ");\n";
-//    std::cout << "Point B: (" << B.x << ", " << B.y << ");\n";
-//    std::cout << "Point C: (" << C.x << ", " << C.y << ");\n";
-//    std::cout << "Point D: (" << D.x << ", " << D.y << ");\n";
     thiccOctant(start, end, thiccness, color, gamma); // drawing raster line
+//    Point LT{std::min(std::min(A.x, B.x),std::min(C.x, D.x)), std::min(std::min(A.y, B.y),std::min(C.y, D.y))};
+//    Point RB{std::max(std::max(A.x, B.x),std::max(C.x, D.x)), std::max(std::max(A.y, B.y),std::max(C.y, D.y))};
+//    for (int x = LT.x-3; x <= RB.x + 3; x++) {
+//        for (int y = LT.y - 3; y < RB.y + 3; y++) {
+//            drawPoint(x, y, opacity(x, y), color, gamma);
+//        }
+//    }
 }
 
 double PNMImage::opacity(double x, double y) { //// разобраться и дописать(!)
@@ -686,7 +669,6 @@ double PNMImage::opacity(double x, double y) { //// разобраться и д
             return this->angle < rhs.angle;
         }
     };
-//    std::set<PointAngle> Points;
     std::vector<PointAngle> Points;
     auto calculateAngle = [](Point x0, Point A) -> double {
         Point vec {A.x - x0.x, A.y - x0.y}; // compared vector
@@ -700,7 +682,7 @@ double PNMImage::opacity(double x, double y) { //// разобраться и д
         }
         return angle;
     };
-// find edges intersection
+    // find edges intersection
     auto checkEdges = [](Edge A, Edge B) -> Point {
         double a1 = A.b.y - A.a.y;
         double b1 = A.a.x - A.b.x;
@@ -714,7 +696,6 @@ double PNMImage::opacity(double x, double y) { //// разобраться и д
 
         if (determinant == 0)
         {
-            // parallel lines
             return {-1,-1};
         }
         else
@@ -1002,17 +983,21 @@ double PNMImage::opacity(double x, double y) { //// разобраться и д
         }
     }
 
+    double area = 0.0;
     auto calculateArea = [](Point a, Point b, Point c) -> double {
         return abs(0.5*((a.x-c.x)*(b.y-c.y) - (a.y-c.y)*(b.x-c.x)));
     };
-    double area = 0.0;
+
     std::sort(Points.begin(), Points.end(), [](const PointAngle& lhs, const PointAngle& rhs) {
         return lhs.angle < rhs.angle;
     });
+
     if (Points.size() < 3)
         return 0;
+
     Point Sx0 = Points[0].point;
     Point Sx1 = Points[1].point;
+
     for (int i = 2; i < Points.size(); i++) {
         Point Sx2 = Points[i].point;
         area += calculateArea(Sx0, Sx1, Sx2);
