@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <set>
+
+const double EPS = 1e-7;
 
 std::vector<byte> PNMImage::ReadBinary(const char* path, uint64_t length) {
     std::ifstream is(path, std::ios::binary);
@@ -348,8 +351,14 @@ bool PNMImage::isColor() {
 }
 
 void PNMImage::thiccOctant(Point start, Point end, int thiccness, byte color, double gamma) {
-    int dx = (int)round(end.x - start.x);
-    int dy = (int)round(end.y - start.y);
+    double ddx = end.x - start.x;
+    double ddy = end.y - start.y;
+    start.x += -ddx * 2/sqrt(ddx*ddx + ddy*ddy);
+    start.y += -ddy * 2/sqrt(ddx*ddx + ddy*ddy);
+    end.x += ddx * 2/sqrt(ddx*ddx + ddy*ddy);
+    end.y += ddy * 2/sqrt(ddx*ddx + ddy*ddy);
+    int dx = (int)round(ddx);
+    int dy = (int)round(ddy);
     int pError = 0;
     int error = 0;
     int y = (int)round(start.y);
@@ -454,7 +463,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             int tk = dx + dy + widthInit;////
 
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);
+//                drawPoint(x, y, 1, color, gamma);
+                drawPoint(x, y, opacity(x, y), color, gamma);
                 if (error > threshold) {
                     y++;////
                     error += Ediag;
@@ -471,7 +481,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             tk = dx + dy - widthInit;////
 
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);
+//                drawPoint(x, y, 1, color, gamma);
+                drawPoint(x, y, opacity(x, y), color, gamma);
                 if (error > threshold) {
                     y--;////
                     error += Ediag;
@@ -490,7 +501,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             int tk = dx + dy - widthInit;
 
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);////
+                drawPoint(x, y, opacity(x, y), color, gamma);
+//                drawPoint(x, y, 1, color, gamma);////
                 if (error > threshold) {
                     y--;
                     error += Ediag;
@@ -507,7 +519,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             tk = dx + dy + widthInit;
 
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);////
+                drawPoint(x, y, opacity(x, y), color, gamma);
+//                drawPoint(x, y, 1, color, gamma);////
                 if (error > threshold) {
                     y++;
                     error += Ediag;
@@ -529,7 +542,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             int tk = dx + dy + widthInit;//// + перед W
 
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);
+                drawPoint(x, y, opacity(x, y), color, gamma);
+//                drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
                     x++;//// ++
                     error += Ediag;
@@ -546,7 +560,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             tk = dx + dy - widthInit; //// - перед W
 
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);
+                drawPoint(x, y, opacity(x, y), color, gamma);
+//                drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
                     x--;//// --
                     error += Ediag;
@@ -564,7 +579,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
 
             int tk = dx + dy - widthInit;
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);
+                drawPoint(x, y, opacity(x, y), color, gamma);
+//                drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
                     x--;
                     error += Ediag;
@@ -581,7 +597,8 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
             tk = dx + dy + widthInit;
 
             while (tk <= wthr) {
-                drawPoint(x, y, 1, color, gamma);
+                drawPoint(x, y, opacity(x, y), color, gamma);
+//                drawPoint(x, y, 1, color, gamma);
                 if (error > threshold) {
                     x++;
                     error += Ediag;
@@ -594,94 +611,6 @@ void PNMImage::pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWi
         }
     }
 }
-/*
-void PNMImage::drawLine(Point start, Point end, byte color, double thiccness, double gamma) {
-    bool steep = abs(end.y - start.y) > abs(end.x - start.x);
-
-    auto intPart = [](double x) -> int {return (int) x;};
-    auto plot = [&](int x, int y, double intensity) -> void {
-        if (gamma == 0) {
-            if (steep)
-                drawPoint(y, x, 1.0 - intensity, color);
-            else
-                drawPoint(x, y, 1.0 - intensity, color);
-        }
-        else {
-            if (steep)
-                drawPoint(y, x, 1.0 - intensity, color, gamma);
-            else
-                drawPoint(x, y, 1.0 - intensity, color, gamma);
-        }
-    };
-    auto distance = [](Point a, Point b) -> double {
-        return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-    };
-
-    if (steep) {
-        std::swap(start.x, start.y);
-        std::swap(end.x, end.y);
-    }
-    if (start.x > end.x) {
-        std::swap(start.x, end.x);
-        std::swap(start.y, end.y);
-    }
-
-    double dx = end.x - start.x;
-    double dy = end.y - start.y;
-
-    double gradient = dy / dx;
-
-    double y = start.y + gradient * (round(start.x) - start.x);
-
-
-
-    if (gradient == 1) {
-        for(int plotX = round(start.x); plotX <= round(end.x); plotX++) {
-            for (int plotY = intPart(y - (thiccness - 1) / 2); plotY <= intPart(y + (thiccness + 1) / 2); plotY++)
-            {
-                plot(plotX, plotY, std::min(1.0, (thiccness + 1.0) / 2.0 - fabs(y - plotY)));
-            }
-            y += gradient;
-        }
-    } else {
-        for (int plotX = round(start.x); plotX <= round(end.x); plotX++) {
-            for (int plotY = intPart(y - (thiccness - 1) / 2); plotY <= intPart(y + (thiccness + 1) / 2); plotY++) {
-                plot(plotX, plotY, std::min(1.0, (thiccness + 1.0) / 2.0 - fabs(y - plotY)));
-            }
-            y += gradient;
-        }
-    }
-
-    Point plotStart = {round(start.x), round(start.y)};
-    for (int plotX = round(start.x) - thiccness / 2; plotX < round(start.x); plotX++) {
-        y = start.y + gradient * (plotX - start.x);
-        for (int plotY = int(y - (thiccness - 1) / 2.0); plotY <= int(y + (thiccness + 1) / 2.0); plotY++) {
-            plot(plotX, plotY, std::min(1.0, (thiccness + 0.5) / 2.0 -
-                                        distance({(double) plotX, (double) plotY}, {plotStart.x, plotStart.y})));
-        }
-    }
-
-    Point plotEnd = {round(end.x), round(end.y)};
-    for (int plotX = round(end.x) + 1; plotX <= round(end.x) + thiccness / 2; plotX++) {
-        y = start.y + gradient * (plotX - start.x);
-        for (int plotY = int(y - (thiccness - 1) / 2.0); plotY <= int(y + (thiccness + 1) / 2.0); plotY++) {
-            plot(plotX, plotY, std::min(1.0, (thiccness + 0.5) / 2.0 -
-                                        distance({(double) plotX, (double) plotY}, {plotEnd.x, plotEnd.y})));
-        }
-    }
-}
-
-void PNMImage::drawLine(double x0, double y0, double x1, double y1, byte color, double thiccness, double gamma) {
-    if (!isGrey()) {
-        std::cerr << "Error: Incorrect color!" << std::endl;
-        exit(1);
-    }
-    if (thiccness <= 0)
-        return;
-//    drawLine({x0, y0}, {x1, y1}, color, thiccness, gamma);
-    thiccOctant(x0, y0, x1, y1, thiccness, color, gamma);
-}
- */
 
 //    что-то тут не так? яркость и фон - в гамме то есть сначала надо перевести ее в линию а затем обратно в гамму
 void PNMImage::drawPoint(int x, int y, double opacity, byte color, double gamma) { // видимо не умею считать вернул в развернутый вариант
@@ -736,7 +665,10 @@ void PNMImage::drawThickLine(double x0, double y0, double x1, double y1, byte co
     Edge e3 = {C, D};
     Edge e4 = {D, A};
     line = {e1, e2, e3, e4}; // vector line
-
+//    std::cout << "Point A: (" << A.x << ", " << A.y << ");\n";
+//    std::cout << "Point B: (" << B.x << ", " << B.y << ");\n";
+//    std::cout << "Point C: (" << C.x << ", " << C.y << ");\n";
+//    std::cout << "Point D: (" << D.x << ", " << D.y << ");\n";
     thiccOctant(start, end, thiccness, color, gamma); // drawing raster line
 }
 
@@ -746,11 +678,345 @@ double PNMImage::opacity(double x, double y) { //// разобраться и д
                 , {{x+0.5, y+0.5}, {x-0.5, y+0.5}}
                 , {{x-0.5, y+0.5}, {x-0.5, y-0.5}}};
 
+    struct PointAngle {
+        Point point;
+        double angle;
+        PointAngle(Point point_, double angle_) : point(point_), angle(angle_) {};
+        bool operator<(const PointAngle& rhs) {
+            return this->angle < rhs.angle;
+        }
+    };
+//    std::set<PointAngle> Points;
+    std::vector<PointAngle> Points;
+    auto calculateAngle = [](Point x0, Point A) -> double {
+        Point vec {A.x - x0.x, A.y - x0.y}; // compared vector
+        double mod = sqrt(vec.x*vec.x + vec.y*vec.y);
+        double cos = vec.x/mod;
+        if (cos < -1) cos = -1;
+        if (cos > 1) cos = 1;
+        double angle = acos(cos);
+        if (vec.y < 0) {
+            angle *= -1;
+        }
+        return angle;
+    };
+// find edges intersection
+    auto checkEdges = [](Edge A, Edge B) -> Point {
+        double a1 = A.b.y - A.a.y;
+        double b1 = A.a.x - A.b.x;
+        double c1 = a1*(A.a.x) + b1*(A.a.y);
 
+        double a2 = B.b.y - B.a.y;
+        double b2 = B.a.x - B.b.x;
+        double c2 = a2*(B.a.x)+ b2*(B.a.y);
 
+        double determinant = a1*b2 - a2*b1;
 
+        if (determinant == 0)
+        {
+            // parallel lines
+            return {-1,-1};
+        }
+        else
+        {
+            double x = (b2*c1 - b1*c2)/determinant;
+            double y = (a1*c2 - a2*c1)/determinant;
+            if (x >= std::min(A.a.x, A.b.x) && x <= std::max(A.a.x, A.b.x)
+                    && y >= std::min(A.a.y, A.b.y) && y <= std::max(A.a.y, A.b.y)
+                    && x >= std::min(B.a.x, B.b.x) && x <= std::max(B.a.x, B.b.x)
+                    && y >= std::min(B.a.y, B.b.y) && y <= std::max(B.a.y, B.b.y)) {
+                return {x, y};
+            } else {
+                return {-1, -1};
+            }
+        }
+    };
+    Point test = {0, 0};
+    PointAngle x0 = {{-1,-1}, -1};
+    auto Find = [] (Point x, const std::vector<PointAngle>& vec) -> bool {
+        for (auto item : vec) {
+            if (item.point.x == x.x && item.point.y == x.y) {
+                return true;
+            }
+        }
+        return false;
+    };
+    if ((test = checkEdges(line.e1, pixel.e1)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e1, pixel.e2)).x != -1 && test.y != -1)  {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e1, pixel.e3)).x != -1 && test.y != -1)  {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e1, pixel.e4)).x != -1 && test.y != -1)  {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e2, pixel.e1)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e2, pixel.e2)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e2, pixel.e3)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e2, pixel.e4)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e3, pixel.e1)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e3, pixel.e2)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e3, pixel.e3)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e3, pixel.e4)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e4, pixel.e1)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e4, pixel.e2)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e4, pixel.e3)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
+    if ((test = checkEdges(line.e4, pixel.e4)).x != -1 && test.y != -1) {
+        if (Points.empty()) {
+            Points.emplace_back(test, -10000);
+            x0 = {test, -10000};
+        } else {
+            if (!Find(test, Points)) {
+                Points.emplace_back(test, calculateAngle(x0.point, test));
+            }
+        }
+    }
 
-    return 0;
+    //find inner points
+    auto checkPoint = [](Rect Rectangle, Point A) -> bool {
+        auto product = [](Point P, Edge E) -> double {
+            return (E.b.x-E.a.x)*(P.y-E.a.y) - (E.b.y-E.a.y)*(P.x-E.a.x);
+        };
+        double p1 = product(A, Rectangle.e1);
+        double p2 = product(A, Rectangle.e2);
+        double p3 = product(A, Rectangle.e3);
+        double p4 = product(A, Rectangle.e4);
+        return (p1<EPS&&p2<EPS&&p3<EPS&&p4<EPS) || (p1>EPS&&p2>EPS&&p3>EPS&&p4>EPS);
+    };
+    if (checkPoint(line, pixel.e1.a)) {
+        Point t = pixel.e1.a;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+    if (checkPoint(line, pixel.e1.b))  {
+        Point t = pixel.e1.b;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+    if (checkPoint(line, pixel.e3.a))  {
+        Point t = pixel.e3.a;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+    if (checkPoint(line, pixel.e3.b))  {
+        Point t = pixel.e3.b;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+    if (checkPoint(pixel, line.e1.a)) {
+        Point t = line.e1.a;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+    if (checkPoint(pixel, line.e1.b)) {
+        Point t = line.e1.b;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+    if (checkPoint(pixel, line.e3.a)) {
+        Point t = line.e3.a;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+    if (checkPoint(pixel, line.e3.b)) {
+        Point t = line.e3.b;
+        if (Points.empty()) {
+            Points.emplace_back(t, -10000);
+            x0 = {t, -10000};
+        } else {
+            if (!Find(t, Points)) {
+                Points.emplace_back(t, calculateAngle(x0.point, t));
+            }
+        }
+    }
+
+    auto calculateArea = [](Point a, Point b, Point c) -> double {
+        return abs(0.5*((a.x-c.x)*(b.y-c.y) - (a.y-c.y)*(b.x-c.x)));
+    };
+    double area = 0.0;
+    std::sort(Points.begin(), Points.end(), [](const PointAngle& lhs, const PointAngle& rhs) {
+        return lhs.angle < rhs.angle;
+    });
+    if (Points.size() < 3)
+        return 0;
+    Point Sx0 = Points[0].point;
+    Point Sx1 = Points[1].point;
+    for (int i = 2; i < Points.size(); i++) {
+        Point Sx2 = Points[i].point;
+        area += calculateArea(Sx0, Sx1, Sx2);
+        Sx1 = Sx2;
+    }
+    return area;
 }
-
-

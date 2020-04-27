@@ -13,6 +13,8 @@ private:
     struct Point {
         double x;
         double y;
+
+        Point& operator=(const Point& other) = default;
     };
     struct Edge {
         Point a, b;

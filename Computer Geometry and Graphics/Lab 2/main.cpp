@@ -30,6 +30,10 @@ int main(int argc, char* argv[]) {
         picture.drawThickLine(x0, y0, x1, y1, color, thickness, 0);
 
     picture.Export(outputFileName);
-
+//    std::pair<int,int> test = {0,0};
+//    if ((test = {1, 2}).first == 1 && test.second == 2) {
+//        std::cout << "yay\n";
+//    }
+//    std::cout << test.first << " " << test.second;
     return 0;
 }
