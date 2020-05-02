@@ -13,14 +13,10 @@ private:
     struct Point {
         double x;
         double y;
-
         Point& operator=(const Point& other) = default;
     };
-    struct Edge {
-        Point a, b;
-    };
     struct Rect {
-        Edge e1,e2,e3,e4;
+        Point A, B, C, D;
     };
 
     std::vector<byte> Buffer;
@@ -29,11 +25,6 @@ private:
     uint8_t Type;
     struct Point start, end;
     struct Rect line;
-    bool steep;
-
-
-    void pOctant(int x0, int y0, int dx, int dy, int errorInit, int sideWidth, int widthInit, byte color, double gamma);
-    void thiccOctant(Point start, Point end, int thiccness, byte color, double gamma);
 
     void drawPoint(int, int, double, byte, double);
 
