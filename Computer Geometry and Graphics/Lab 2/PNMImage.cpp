@@ -377,10 +377,14 @@ void PNMImage::drawThickLine(double x0, double y0, double x1, double y1, byte co
 }
 
 double PNMImage::opacity(double x, double y) { //// разобраться и дописать(!)
-    Point A = {x-0.5, y-0.5};
-    Point B = {x+0.5, y-0.5};
-    Point C = {x+0.5, y+0.5};
-    Point D = {x-0.5, y+0.5};
+//    Point B = {x+0.5, y-0.5};
+//    Point A = {x-0.5, y-0.5};
+//    Point C = {x+0.5, y+0.5};
+//    Point D = {x-0.5, y+0.5};
+    Point A = {x, y};
+    Point B = {x + 1, y};
+    Point C = {x + 1, y + 1};
+    Point D = {x, y + 1};
 
     auto checkPoint = [](Rect Rectangle, Point p) -> bool {
             auto triangleArea = [](Point A, Point B, Point C) -> double{
@@ -426,8 +430,8 @@ double PNMImage::opacity(double x, double y) { //// разобраться и д
         checkPoint(line, D))
         return 1;
     double area = 0;
-    for (double i = x-0.45; i <= x+0.45; i += 0.1) {
-        for (double j = y-0.45; j <= y+0.45; j += 0.1) {
+    for (double i = x; i < x+1; i += 0.1) {
+        for (double j = y; j < y+1; j += 0.1) {
             if (checkPoint(line, {i,j})) {
                 area += 0.01;
             }

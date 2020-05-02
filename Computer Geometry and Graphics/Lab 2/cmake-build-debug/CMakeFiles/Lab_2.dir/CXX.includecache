@@ -36,11 +36,3 @@ iostream
 fstream
 -
 
-/Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 2/main.cpp
-iostream
--
-string
--
-PNMImage.h
-/Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 2/PNMImage.h
-
