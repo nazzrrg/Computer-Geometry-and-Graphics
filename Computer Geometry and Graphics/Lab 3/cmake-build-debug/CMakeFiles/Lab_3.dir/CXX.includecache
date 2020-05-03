@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 3/PNMImage.cpp
+PNMImage.h
+/Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 3/PNMImage.h
+iostream
+-
+fstream
+-
+algorithm
+-
+filesystem
+-
+string
+-
+vector
+-
+cmath
+-
+exception
+-
+random
+-
+
+/Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 3/PNMImage.h
+vector
+-
+cstdint
+-
+iostream
+-
+fstream
+-
+
