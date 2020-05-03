@@ -13,4 +13,4 @@ This simple console application allows you to draw lines of various thickness on
 |**\<thickness>**|*Positive real number*||
 |**\<x0> \<y0>**|*Positive real numbers*|Start coordinates|
 |**\<x1> \<y1>**|*Positive real numbers*|End coordinates|
-|**\<gamma>**|*Positive real number*|Gamma value|
+|**\<gamma>**|*Positive real number*|Gamma value, omitting this argument or value of 0 equals to sRGB|
