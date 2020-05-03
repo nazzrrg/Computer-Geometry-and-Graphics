@@ -376,11 +376,7 @@ void PNMImage::drawThickLine(double x0, double y0, double x1, double y1, byte co
     }
 }
 
-double PNMImage::opacity(double x, double y) { //// разобраться и дописать(!)
-//    Point B = {x+0.5, y-0.5};
-//    Point A = {x-0.5, y-0.5};
-//    Point C = {x+0.5, y+0.5};
-//    Point D = {x-0.5, y+0.5};
+double PNMImage::opacity(double x, double y) {
     Point A = {x, y};
     Point B = {x + 1, y};
     Point C = {x + 1, y + 1};
