@@ -10,6 +10,6 @@ This simple console application allows you to dither P5 PNM images
 |**<input_file_name>**|*Path ending with .npm file*|Name of the input file|
 |**<output_file_name>**|*Path ending with .npm file*|Name of the outnput file|
 |**\<gradient>**|*1 or 0*|If set 1, the picture will be replaced with horizontal gradient from 0 to 255|
-|**\<dithering_type>**|*Positive real number*||
+|**\<dithering_type>**|*Positive real number*|0 - No Dithering(Thresholding)<br>1 - Ordered 8x8<br>2 - Random<br>3 - Floyd-Steinberg<br>4 - Jarvis, Judice, Ninke<br>5 - Sierra-3<br>6 - Atkinson<br>7 - Halftone orthogonal 4x4|
 |**\<bit_rate>**|*Number between 1 and 8*|New bit count per pixel|
-|**\<gamma>**|*Positive real number*|gamma value, 0 equals sRGB|
+|**\<gamma>**|*Positive real number*|Gamma value, 0 equals sRGB|
