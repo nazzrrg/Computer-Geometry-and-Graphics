@@ -453,7 +453,7 @@ double PNMImage::encodeGamma(double value, double gamma) {
 void PNMImage::fillGradient(double gamma) {
     for (int i = 0; i < Height; ++i) {
         for (int j = 0; j < Width; ++j) {
-            pixel(i, j) = encodeGamma((double)j/Width, gamma)*255;
+            pixel(i, j) = encodeGamma((double)j/(Width - 1.0), gamma)*255;
         }
     }
 }

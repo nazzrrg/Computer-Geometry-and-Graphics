@@ -6,28 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 4/PNMImage.cpp
-PNMImage.h
-/Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 4/PNMImage.h
-iostream
--
-fstream
--
-algorithm
--
-filesystem
--
-string
--
-vector
--
-cmath
--
-exception
--
-random
--
-
 /Users/nazzrrg/Git/Computer-Geometry-and-Graphics-II/Computer Geometry and Graphics/Lab 4/PNMImage.h
 vector
 -

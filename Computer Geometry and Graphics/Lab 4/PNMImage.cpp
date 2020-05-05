@@ -857,27 +857,36 @@ void PNMImage::convertColorSpace(char *from, char *to) {
             RGB[i+2] = roundToByte((int)((B+m)*255));
         }
     } else if (!strcmp(from, "YCbCr.601")) {
+        double Kb = 0.299;
+        double Kr = 0.587;
+        double Kg = 0.114;
         RGB.resize(ImageData.size());
         for (int i = 0; i < ImageData.size(); i+=3) {
-            int Y = ImageData[i];
-            int Cb = ImageData[i+1];
-            int Cr = ImageData[i+2];
-            RGB[i]   = roundToByte((int)(298.082*Y/256                  + 408.583*Cr/256 - 222.921));
-            RGB[i+1] = roundToByte((int)(298.082*Y/256 - 100.291*Cb/256 - 208.120*Cr/256 + 135.576));
-            RGB[i+2] = roundToByte((int)(298.082*Y/256 + 516.412*Cb/256                  - 276.836));
+            double Y =   ImageData[i]     / 255.0;
+            double Cb = ImageData[i + 1] / 255.0 - 0.5;
+            double Cr = ImageData[i + 2] / 255.0 - 0.5;
+            double R = Y + (2 - 2 * Kr) * Cr;
+            double G = Y - Kb * (2 - 2 * Kb) * Cb / Kg - Kr * (2 - 2 * Kr) * Cr / Kg;
+            double B = Y + (2 - 2 * Kb) * Cb;
+            RGB[i]   = roundToByte((int)(R*255));
+            RGB[i+1] = roundToByte((int)(G*255));
+            RGB[i+2] = roundToByte((int)(B*255));
         }
     } else if (!strcmp(from, "YCbCr.709")) {
+        double Kb = 0.0722;
+        double Kr = 0.2126;
+        double Kg = 0.7152;
         RGB.resize(ImageData.size());
         for (int i = 0; i < ImageData.size(); i+=3) {
-            int Y = ImageData[i];
-            int Cb = ImageData[i+1];
-            int Cr = ImageData[i+2];
-            double Kr = 0.2126;
-            double Kg = 0.7152;
-            double Kb = 0.0722;
-            RGB[i]   = roundToByte((int)(255/219.0*(Y-16) + 255*(2-2*Kr)/224.0*(Cr-128)));
-            RGB[i+1] = roundToByte((int)(255/219.0*(Y-16) - 255/224.0*Kb/Kg*(2-2*Kb)*(Cb-128) - 255/224.0*Kr/Kg*(2-2*Kr)*(Cr-128)));
-            RGB[i+2] = roundToByte((int)(255/219.0*(Y-16) + 255*(2-2*Kb)/224.0*(Cb-128)));
+            double Y =   ImageData[i]     / 255.0;
+            double Cb = ImageData[i + 1] / 255.0 - 0.5;
+            double Cr = ImageData[i + 2] / 255.0 - 0.5;
+            double R = Y + (2 - 2 * Kr) * Cr;
+            double G = Y - Kb * (2 - 2 * Kb) * Cb / Kg - Kr * (2 - 2 * Kr) * Cr / Kg;
+            double B = Y + (2 - 2 * Kb) * Cb;
+            RGB[i]   = roundToByte((int)(R*255));
+            RGB[i+1] = roundToByte((int)(G*255));
+            RGB[i+2] = roundToByte((int)(B*255));
         }
     } else if (!strcmp(from, "YCoCg")) {
         RGB.resize(ImageData.size());
@@ -970,24 +979,36 @@ void PNMImage::convertColorSpace(char *from, char *to) {
             result[i+2] = roundToByte((int)(V*255));
         }
     } else if (!strcmp(to, "YCbCr.601")) {
+        double Kb = 0.299;
+        double Kr = 0.587;
+        double Kg = 0.114;
         result.resize(RGB.size()); // to YCbCr.601
         for (int i = 0; i < RGB.size(); i+=3) {
-            int R = RGB[i];
-            int G = RGB[i + 1];
-            int B = RGB[i + 2];
-            result[i]   = roundToByte((int)(16.0  +  65.738*R/256 + 129.057*G/256 +  25.064*B/256)); // Y
-            result[i+1] = roundToByte((int)(128.0 -  37.945*R/256 -  74.494*G/256 + 112.439*B/256)); // Cb
-            result[i+2] = roundToByte((int)(128.0 + 112.439*R/256 -  94.154*G/256 -  18.285*B/256)); // Cr
+            double R = RGB[i] / 255.0;
+            double G = RGB[i + 1] / 255.0;
+            double B = RGB[i + 2] / 255.0;
+            double Y =   Kr * R + Kg * G + Kb * B;
+            double Cb = (B - Y) / (2 * (1 - Kb));
+            double Cr = (R - Y) / (2 * (1 - Kr));
+            result[i]   = roundToByte((int)(Y*255)); // Y
+            result[i+1] = roundToByte((int)((Cb+0.5)*255)); // Cb
+            result[i+2] = roundToByte((int)((Cr+0.5)*255)); // Cr
         }
     } else if (!strcmp(to, "YCbCr.709")) {
-        result.resize(RGB.size()); // to YCbCr.709
+        double Kb = 0.0722;
+        double Kr = 0.2126;
+        double Kg = 0.7152;
+        result.resize(RGB.size()); // to YCbCr.601
         for (int i = 0; i < RGB.size(); i+=3) {
-            int R = RGB[i];
-            int G = RGB[i + 1];
-            int B = RGB[i + 2];
-            result[i]   = roundToByte((int)(16.0  +  46.742*R/256 + 157.243*G/256 +  15.874*B/256)); // Y
-            result[i+1] = roundToByte((int)(128.0 -  25.765*R/256 -  86.675*G/256 + 112.439*B/256)); // Cb
-            result[i+2] = roundToByte((int)(128.0 + 112.439*R/256 -  102.129*G/256 -  10.31*B/256)); // Cr
+            double R = RGB[i] / 255.0;
+            double G = RGB[i + 1] / 255.0;
+            double B = RGB[i + 2] / 255.0;
+            double Y =   Kr * R + Kg * G + Kb * B;
+            double Cb = (B - Y) / (2 * (1 - Kb));
+            double Cr = (R - Y) / (2 * (1 - Kr));
+            result[i]   = roundToByte((int)(Y*255)); // Y
+            result[i+1] = roundToByte((int)((Cb+0.5)*255)); // Cb
+            result[i+2] = roundToByte((int)((Cr+0.5)*255)); // Cr
         }
     } else if (!strcmp(to, "YCoCg")) {
         result.resize(RGB.size()); // to YCoCg

@@ -10,11 +10,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    char *inputFileName, *outputFileName;
+    char *inputFileName = nullptr, *outputFileName = nullptr;
     byte bit;
     int ditheringType;
     bool gradient;
     double gamma;
+
+    auto cleanUp = [](char* in, char* out, PNMImage* im) -> void {
+        delete in;
+        delete out;
+        delete im;
+    };
 
     try {
         inputFileName = strdup(argv[1]);
@@ -34,6 +40,7 @@ int main(int argc, char* argv[]) {
         picture = new PNMImage(inputFileName);
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
+        cleanUp(inputFileName, outputFileName, picture);
         return 1;
     }
     try {
@@ -77,6 +84,7 @@ int main(int argc, char* argv[]) {
         }
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
+        cleanUp(inputFileName, outputFileName, picture);
         return 1;
     }
 
@@ -84,15 +92,9 @@ int main(int argc, char* argv[]) {
         picture->Export(outputFileName);
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
+        cleanUp(inputFileName, outputFileName, picture);
         return 1;
     }
-    try {
-        delete inputFileName; // fix 4 ?
-        delete outputFileName;
-        delete picture;
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    }
+
     return 0;
 }
