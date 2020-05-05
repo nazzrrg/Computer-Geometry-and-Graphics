@@ -2,7 +2,7 @@
 
 This simple console application allows you to convert color spaces of PNM images and merge layers of color spaces.
 
-**Arguments format: binary_execurion_file lab4.exe -f \<from_color_space> -t \<to_color_space> -i \<count> \<input_file_name> -o \<count> \<output_file_name>
+**Arguments format: binary_execurion_file lab4.exe -f \<from_color_space> -t \<to_color_space> -i \<count> \<input_file_name> <br>-o \<count> \<output_file_name>
 >**Note**: All arguments are reqired, -f, -t, -i, -o order are optional.
 
 | Argument | Format | Description |
