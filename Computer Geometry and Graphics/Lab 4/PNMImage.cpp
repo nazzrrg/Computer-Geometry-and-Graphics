@@ -507,19 +507,16 @@ double PNMImage::closestPaletteColor(byte px, byte bitRate) {
 }
 
 void PNMImage::fillGradient(double gamma) {
-    if (!isGrey()) {
-        throw std::runtime_error("Error, input image is not grey!");
-    }
     for (int i = 0; i < Height; ++i) {
         for (int j = 0; j < Width; ++j) {
-            pixel(i, j) = encodeGamma((double)j/Width, gamma)*255;
+            pixel(i, j) = encodeGamma((double)j/(Width - 1.0), gamma)*255; // fix gradient 0-255 not 254
         }
     }
 }
 
 void PNMImage::ditherNone(byte bitRate, double gamma) {
-    for (int i = 0; i < Width; ++i) {
-        for (int j = 0; j < Height; ++j) {
+    for (int i = 0; i < Height; ++i) { // fix 1
+        for (int j = 0; j < Width; ++j) {
             double value = decodeGamma(pixel(i, j)/255.0, gamma);
             value = std::min(std::max(value, 0.0), 1.0);
             double newPaletteColor = closestPaletteColor((byte)(value*255), bitRate);
@@ -622,9 +619,9 @@ void PNMImage::ditherJJN(byte bitRate, double gamma) {
             for (int ie = 0; ie < 3; ie++) {
                 for (int je = 0; je < 5; je++) {
                     if (i + ie >= Height || j + (je - 2) >= Width || j + (je - 2) < 0)
-                        break;
-                    if (ie == 0 && je <= 2)
-                        break;
+                        continue; // fix 3
+                    if (ie == 0 && je < 3)
+                        continue;
 
                     getError(i + ie, j + (je - 2)) += error * matrixJJN[ie][je];
                 }
@@ -660,9 +657,9 @@ void PNMImage::ditherSierra(byte bitRate, double gamma) {
             for (int ie = 0; ie < 3; ie++) {
                 for (int je = 0; je < 5; je++) {
                     if (i + ie >= Height || j + (je - 2) >= Width || j + (je - 2) < 0)
-                        break;
+                        continue; // fix 3
                     if (ie == 0 && je <= 2)
-                        break;
+                        continue;
 
                     getError(i + ie, j + (je - 2)) += error * matrixSierra3[ie][je];
                 }
@@ -698,9 +695,9 @@ void PNMImage::ditherAtkinson(byte bitRate, double gamma) {
             for (int ie = 0; ie < 3; ie++) {
                 for (int je = 0; je < 5; je++) {
                     if (i + ie >= Height || j + (je - 2) >= Width || j + (je - 2) < 0)
-                        break;
+                        continue; // fix 3
                     if (ie == 0 && je <= 2)
-                        break;
+                        continue;
 
                     getError(i + ie, j + (je - 2)) += error * matrixAtkinson[ie][je] / 8.0;
                 }
@@ -710,10 +707,14 @@ void PNMImage::ditherAtkinson(byte bitRate, double gamma) {
 }
 
 void PNMImage::ditherHalftone(byte bitRate, double gamma) {
-    const double halftoneMatrix[4][4] = {7 / 16.0, 13 / 16.0, 11 / 16.0, 4 / 16.0,
-                                         12 / 16.0, 16 / 16.0, 14 / 16.0, 8 / 16.0,
-                                         10 / 16.0, 15 / 16.0, 6 / 16.0, 2 / 16.0,
-                                         5 / 16.0, 9 / 16.0, 3 / 16.0, 1 / 16.0};
+//    const double halftoneMatrix[4][4] = {7 / 16.0, 13 / 16.0, 11 / 16.0, 4 / 16.0,
+//                                          12 / 16.0, 16 / 16.0, 14 / 16.0, 8 / 16.0,
+//                                          10 / 16.0, 15 / 16.0, 6 / 16.0, 2 / 16.0,
+//                                          5 / 16.0, 9 / 16.0, 3 / 16.0, 1 / 16.0};
+    const double halftoneMatrix[4][4] = {7 / 17.0, 13 / 17.0, 11 / 17.0, 4 / 17.0, // fix 2
+                                         12 / 17.0, 16 / 17.0, 14 / 17.0, 8 / 17.0,
+                                         10 / 17.0, 15 / 17.0, 6 / 17.0, 2 / 17.0,
+                                         5 / 17.0, 9 / 17.0, 3 / 17.0, 1 / 17.0};
     for (int i = 0; i < Height; i++) {
         for (int j = 0; j < Width; j++) {
             double value = decodeGamma(pixel(i, j)/255.0, gamma);
@@ -799,25 +800,24 @@ void PNMImage::convertColorSpace(char *from, char *to) {
     } else if (!strcmp(from, "HSL")) {
         RGB.resize(ImageData.size());
         for (int i = 0; i < ImageData.size(); i+=3) {
-            double H = ImageData[i]/255.0;
+            double H = ImageData[i]/255.0 * 6;
             double S = ImageData[i+1]/255.0;
             double L = ImageData[i+2]/255.0;
-            const double PI = 3.1416926;
             double C = (1 - abs(2*L - 1)) * S;
-            double X = C * (1 - abs((int)(H/PI/3)%2 - 1));
-            double m = L - C/2;
+            double X = C * (1 - abs((int)(H)%2 + (H - (int)H) - 1));
+            double m = L - C / 2.0;
             double R,G,B;
-            if (H >= 0 && H < PI/3) {
+            if (std::ceil(H) - 1.0 < 1e-4) {
                 R = C; G = X; B = 0;
-            } else if (H >= PI/3 && H < 2*PI/3) {
+            } else if (std::ceil(H) - 2.0 < 1e-4) {
                 R = X; G = C; B = 0;
-            } else if (H >= 2*PI/3 && H < PI) {
+            } else if (std::ceil(H) - 3.0 < 1e-4) {
                 R = 0; G = C; B = X;
-            } else if (H >= PI && H < 4*PI/3) {
+            } else if (std::ceil(H) - 4.0 < 1e-4) {
                 R = 0; G = X; B = C;
-            } else if (H >= 4*PI/3 && H < 5*PI/3) {
+            } else if (std::ceil(H) - 5.0 < 1e-4) {
                 R = X; G = 0; B = C;
-            } else if (H >= 6*PI/3 && H < 2*PI) {
+            } else if (std::ceil(H) - 6.0 < 1e-4) {
                 R = C; G = 0; B = X;
             } else {
                 throw std::runtime_error("Error H value out of range!");
@@ -829,25 +829,25 @@ void PNMImage::convertColorSpace(char *from, char *to) {
     } else if (!strcmp(from, "HSV")) {
         RGB.resize(ImageData.size());
         for (int i = 0; i < ImageData.size(); i+=3) {
-            double H = ImageData[i]/255.0;
+            double H = ImageData[i]/255.0*6;
             double S = ImageData[i+1]/255.0;
             double V = ImageData[i+2]/255.0;
             const double PI = 3.1416926;
             double C = V * S;
-            double X = C * (1 - abs((int)(H / PI/3) % 2 - 1));
+            double X = C * (1 - abs((int)(H) % 2 +(H-(int)H)- 1));
             double m = V - C;
             double R,G,B;
-            if (H >= 0 && H < PI/3) {
+            if (H >= 0.0 && H <= 1.0) {
                 R = C; G = X; B = 0;
-            } else if (H >= PI/3 && H < 2*PI/3) {
+            } else if (H >= 1.0 && H <= 2.0) {
                 R = X; G = C; B = 0;
-            } else if (H >= 2*PI/3 && H < PI) {
+            } else if (H >= 2.0 && H <= 3.0) {
                 R = 0; G = C; B = X;
-            } else if (H >= PI && H < 4*PI/3) {
+            } else if (H >= 3.0 && H <= 4.0) {
                 R = 0; G = X; B = C;
-            } else if (H >= 4*PI/3 && H < 5*PI/3) {
+            } else if (H >= 4.0 && H <= 5.0) {
                 R = X; G = 0; B = C;
-            } else if (H >= 6*PI/3 && H < 2*PI) {
+            } else if (H >= 5.0 && H <= 6.0) {
                 R = C; G = 0; B = X;
             } else {
                 throw std::runtime_error("Error H value out of range!");
@@ -862,7 +862,7 @@ void PNMImage::convertColorSpace(char *from, char *to) {
         double Kg = 0.114;
         RGB.resize(ImageData.size());
         for (int i = 0; i < ImageData.size(); i+=3) {
-            double Y =   ImageData[i]     / 255.0;
+            double Y =  ImageData[i]     / 255.0;
             double Cb = ImageData[i + 1] / 255.0 - 0.5;
             double Cr = ImageData[i + 2] / 255.0 - 0.5;
             double R = Y + (2 - 2 * Kr) * Cr;
@@ -892,8 +892,8 @@ void PNMImage::convertColorSpace(char *from, char *to) {
         RGB.resize(ImageData.size());
         for (int i = 0; i < ImageData.size(); i+=3) {
             double Y = ImageData[i]/255.0;
-            double Co = ImageData[i+1]/255.0;
-            double Cg = ImageData[i+2]/255.0;
+            double Co = ImageData[i+1]/255.0 - 0.5;
+            double Cg = ImageData[i+2]/255.0 - 0.5;
             RGB[i]   = roundToByte((int)((Y+Co-Cg)*255));
             RGB[i+1] = roundToByte((int)((Y+Cg)*255));
             RGB[i+2] = roundToByte((int)((Y-Co-Cg)*255));
@@ -925,29 +925,31 @@ void PNMImage::convertColorSpace(char *from, char *to) {
             double delta = Cmax - Cmin;
             double L = (Cmax + Cmin)/2.0;
             double S = 0, H = 0;
-            const double PI = 3.1416926;
-            if (delta < 1e-7) {
+            if (L == 0 || L == 1) {
                 S = 0;
             } else {
-                S = delta/(1 - abs(2*L - 1));
+                S = (Cmax - L)/std::min(1.0, 1 - L);
             }
-            if (delta < 1e-7) {
+
+            if (delta == 0) {
                 H = 0;
             } else if (Cmax == R) {
-                H = PI/3*((int)((G-B)/delta)%6);
+                H = (G-B)/delta;
             } else if (Cmax == G) {
-                H = PI/3*((B-R)/delta + 2);
+                H = (B-R)/delta + 2;
             } else if (Cmax == B) {
-                H = PI/3*((R-G)/delta + 4);
+                H = (R-G)/delta + 4;
             } else {
                 throw std::runtime_error("Error unable to convert to HSL");
             }
-            result[i] = roundToByte((int)(H*255));
+            H *= 60;
+            if (H < 0)  H += 360;
+            result[i] = roundToByte((int)(H/360.0*255));
             result[i+1] = roundToByte((int)(S*255));
             result[i+2] = roundToByte((int)(L*255));
         }
     } else if (!strcmp(to, "HSV")) {
-        result.resize(RGB.size()); // to HSL
+        result.resize(RGB.size()); // to HSV
         for (int i = 0; i < RGB.size(); i+=3) {
             double R = RGB[i]/255.0;
             double G = RGB[i + 1]/255.0;
@@ -957,24 +959,25 @@ void PNMImage::convertColorSpace(char *from, char *to) {
             double delta = Cmax - Cmin;
             double V = Cmax;
             double S = 0, H = 0;
-            const double PI = 3.1416926;
-            if (Cmax < 1e-7) {
+            if (V == 0) {
                 S = 0;
             } else {
                 S = delta/Cmax;
             }
-            if (delta < 1e-7) {
+            if (delta == 0) {
                 H = 0;
             } else if (Cmax == R) {
-                H = PI/3*((int)((G-B)/delta)%6);
+                H = (G-B)/delta;
             } else if (Cmax == G) {
-                H = PI/3*((B-R)/delta + 2);
+                H = (B-R)/delta + 2;
             } else if (Cmax == B) {
-                H = PI/3*((R-G)/delta + 4);
+                H = (R-G)/delta + 4;
             } else {
                 throw std::runtime_error("Error unable to convert to HSL");
             }
-            result[i] = roundToByte((int)(H*255));
+            H *= 60;
+            if (H<0) H+=360;
+            result[i] = roundToByte((int)(H/360*255));
             result[i+1] = roundToByte((int)(S*255));
             result[i+2] = roundToByte((int)(V*255));
         }
