@@ -8,3 +8,5 @@ Second semester worth of laboratory practices on computer geometry and graphics.
 [**Line drawing with smoothing and gamma correction**](https://github.com/nazzrrg/Computer-Geometry-and-Graphics-II/tree/master/Computer%20Geometry%20and%20Graphics/Lab%202)
 ## Lab 3
 [**Dithering algorithms with gamma correction**](https://github.com/nazzrrg/Computer-Geometry-and-Graphics-II/tree/master/Computer%20Geometry%20and%20Graphics/Lab%203)
+## Lab 4
+[**Shifting color spaces**](https://github.com/nazzrrg/Computer-Geometry-and-Graphics-II/tree/master/Computer%20Geometry%20and%20Graphics/Lab%204)
