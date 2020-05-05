@@ -12,50 +12,6 @@
 const double EPS = 1e-5;
 using byte = unsigned char;
 
-std::vector<byte> PNMImage::ReadBinary(const char* path, uint64_t length) {
-    std::ifstream is(path, std::ios::binary);
-    if (!is) {
-        throw std::runtime_error("Error when opening file.");
-    }
-    std::vector<byte> data;
-    try {
-        data.resize(length);
-    } catch (std::exception& e) {
-        char* error = nullptr;
-        strcat(error, "Buffer error, file too large!\n");
-        strcat(error, e.what());
-        throw std::runtime_error(error);
-    }
-
-    try {
-        is.read(reinterpret_cast<char*>(data.data()), length);
-    } catch (std::exception& e) {
-        char* error = nullptr;
-        strcat(error, "Reading error, file could not be read properly!\n");
-        strcat(error, e.what());
-        throw std::runtime_error(error);
-    }
-    is.close();
-    return data;
-}
-
-void PNMImage::WriteBinary(const char* path, const std::vector<byte>& vector) {
-    std::ofstream os(path, std::ios::binary);
-    if (!os) {
-        throw std::runtime_error("Error creating output file!");
-    }
-    try {
-        os.write(reinterpret_cast<const char*>(&vector[0]), vector.size());
-    } catch (std::exception& e) {
-        char* error = nullptr;
-        strcat(error, "Writing error, file could not be written properly!\n");
-        strcat(error, e.what());
-        throw std::runtime_error(error);
-    }
-    os.flush();
-    os.close();
-}
-
 PNMImage::PNMImage(const char* path) {
     //GET FILE SIZE
     std::error_code ec{};
@@ -129,6 +85,95 @@ PNMImage::PNMImage(const char* path) {
     if (ColourDepth != 255) {
         throw std::runtime_error("Error: unable to read this file format!");
     }
+}
+
+PNMImage::PNMImage(uint64_t Width_, uint64_t Height_, uint64_t ColourDepth_, uint8_t Type_) {
+    Width = Width_;
+    Height = Height_;
+    ColourDepth = ColourDepth_;
+    Type = Type_;
+}
+
+PNMImage &PNMImage::operator=(const PNMImage &other) {
+    if (this == &other) {
+        return *this;
+    }
+    this->Size = other.Size;
+    this->Height = other.Height;
+    this->Width = other.Width;
+    this->ColourDepth = other.ColourDepth;
+    this->Type = other.Type;
+    for (auto c : other.ImageData) {
+        this->ImageData.push_back(c);
+    }
+    return *this;
+}
+
+PNMImage::PNMImage(const PNMImage& other) {
+    this->Size = other.Size;
+    this->Height = other.Height;
+    this->Width = other.Width;
+    this->ColourDepth = other.ColourDepth;
+    this->Type = other.Type;
+    for (auto c : other.ImageData) {
+        this->ImageData.push_back(c);
+    }
+}
+
+bool PNMImage::operator==(const PNMImage &other) const {
+    return (this->Size == other.Size && this->Type == other.Type &&
+            this->Width == other.Width && this->Height == other.Height &&
+            this->ColourDepth == other.ColourDepth);
+}
+
+bool PNMImage::operator!=(const PNMImage &other) const {
+    return !(this->Size == other.Size && this->Type == other.Type &&
+             this->Width == other.Width && this->Height == other.Height &&
+             this->ColourDepth == other.ColourDepth);
+}
+
+std::vector<byte> PNMImage::ReadBinary(const char* path, uint64_t length) {
+    std::ifstream is(path, std::ios::binary);
+    if (!is) {
+        throw std::runtime_error("Error when opening file.");
+    }
+    std::vector<byte> data;
+    try {
+        data.resize(length);
+    } catch (std::exception& e) {
+        char* error = nullptr;
+        strcat(error, "Buffer error, file too large!\n");
+        strcat(error, e.what());
+        throw std::runtime_error(error);
+    }
+
+    try {
+        is.read(reinterpret_cast<char*>(data.data()), length);
+    } catch (std::exception& e) {
+        char* error = nullptr;
+        strcat(error, "Reading error, file could not be read properly!\n");
+        strcat(error, e.what());
+        throw std::runtime_error(error);
+    }
+    is.close();
+    return data;
+}
+
+void PNMImage::WriteBinary(const char* path, const std::vector<byte>& vector) {
+    std::ofstream os(path, std::ios::binary);
+    if (!os) {
+        throw std::runtime_error("Error creating output file!");
+    }
+    try {
+        os.write(reinterpret_cast<const char*>(&vector[0]), vector.size());
+    } catch (std::exception& e) {
+        char* error = nullptr;
+        strcat(error, "Writing error, file could not be written properly!\n");
+        strcat(error, e.what());
+        throw std::runtime_error(error);
+    }
+    os.flush();
+    os.close();
 }
 
 void PNMImage::Export(const char* path) {
@@ -314,11 +359,11 @@ void PNMImage::Rotate(int direction) {
     }
 }
 
-bool PNMImage::isGrey() {
+bool PNMImage::isGrey() const {
     return Type == 5;
 }
 
-bool PNMImage::isColor() {
+bool PNMImage::isColor() const {
     return Type == 6;
 }
 
@@ -450,14 +495,6 @@ double PNMImage::encodeGamma(double value, double gamma) {
                                                                                                        1.0 / gamma);
 }
 
-void PNMImage::fillGradient(double gamma) {
-    for (int i = 0; i < Height; ++i) {
-        for (int j = 0; j < Width; ++j) {
-            pixel(i, j) = encodeGamma((double)j/Width, gamma)*255;
-        }
-    }
-}
-
 double PNMImage::closestPaletteColor(byte px, byte bitRate) {
     int t = bitRate;
     byte result = px;
@@ -467,6 +504,17 @@ double PNMImage::closestPaletteColor(byte px, byte bitRate) {
         t += bitRate;
     }
     return result;
+}
+
+void PNMImage::fillGradient(double gamma) {
+    if (!isGrey()) {
+        throw std::runtime_error("Error, input image is not grey!");
+    }
+    for (int i = 0; i < Height; ++i) {
+        for (int j = 0; j < Width; ++j) {
+            pixel(i, j) = encodeGamma((double)j/Width, gamma)*255;
+        }
+    }
 }
 
 void PNMImage::ditherNone(byte bitRate, double gamma) {
@@ -663,9 +711,9 @@ void PNMImage::ditherAtkinson(byte bitRate, double gamma) {
 
 void PNMImage::ditherHalftone(byte bitRate, double gamma) {
     const double halftoneMatrix[4][4] = {7 / 16.0, 13 / 16.0, 11 / 16.0, 4 / 16.0,
-                                          12 / 16.0, 16 / 16.0, 14 / 16.0, 8 / 16.0,
-                                          10 / 16.0, 15 / 16.0, 6 / 16.0, 2 / 16.0,
-                                          5 / 16.0, 9 / 16.0, 3 / 16.0, 1 / 16.0};
+                                         12 / 16.0, 16 / 16.0, 14 / 16.0, 8 / 16.0,
+                                         10 / 16.0, 15 / 16.0, 6 / 16.0, 2 / 16.0,
+                                         5 / 16.0, 9 / 16.0, 3 / 16.0, 1 / 16.0};
     for (int i = 0; i < Height; i++) {
         for (int j = 0; j < Width; j++) {
             double value = decodeGamma(pixel(i, j)/255.0, gamma);
@@ -675,4 +723,294 @@ void PNMImage::ditherHalftone(byte bitRate, double gamma) {
             pixel(i, j) = (byte)(encodeGamma(newPaletteColor/255, gamma)*255);
         }
     }
+}
+
+PNMImage PNMImage::mergeBytes(const PNMImage &source1, const PNMImage &source2, const PNMImage &source3) {
+    if (source1 != source2 || source2 != source3) {
+        throw std::runtime_error("Error, merging images' headers do not match!");
+    }
+    if (!source1.isGrey()) {
+        throw std::runtime_error("Error, merging images are not grey!");
+    }
+
+    PNMImage result(source1.Width, source1.Height, source1.ColourDepth, 6);
+
+    for(int i = 0; i < result.Height*result.Width; i++) {
+        result.ImageData.push_back(source1.ImageData[i]);
+        result.ImageData.push_back(source2.ImageData[i]);
+        result.ImageData.push_back(source3.ImageData[i]);
+    }
+
+    return result;
+}
+
+PNMImage PNMImage::pull1stByte(const PNMImage &source) {
+    if (!source.isColor()) {
+        throw std::runtime_error("Error, splitted image is not color!");
+    }
+
+    PNMImage result(source.Width, source.Height, source.ColourDepth, 5);
+
+    for(int i = 0; i < source.ImageData.size(); i+=3) {
+        result.ImageData.push_back(source.ImageData[i]);
+    }
+
+    return result;
+}
+
+PNMImage PNMImage::pull2ndByte(const PNMImage &source) {
+    if (!source.isColor()) {
+        throw std::runtime_error("Error, splitted image is not color!");
+    }
+
+    PNMImage result(source.Width, source.Height, source.ColourDepth, 5);
+
+    for(int i = 1; i < source.ImageData.size(); i+=3) {
+        result.ImageData.push_back(source.ImageData[i]);
+    }
+
+    return result;
+}
+
+PNMImage PNMImage::pull3rdByte(const PNMImage &source) {
+    if (!source.isColor()) {
+        throw std::runtime_error("Error, splitted image is not color!");
+    }
+
+    PNMImage result(source.Width, source.Height, source.ColourDepth, 5);
+
+    for(int i = 2; i < source.ImageData.size(); i+=3) {
+        result.ImageData.push_back(source.ImageData[i]);
+    }
+
+    return result;
+}
+
+void PNMImage::convertColorSpace(char *from, char *to) {
+    std::vector<byte> result;
+    std::vector<byte> RGB;
+
+    auto roundToByte = [](int val) -> byte{
+        return (byte)std::min(std::max(val, 0), 255);
+    };
+
+    if (!strcmp(from, "RGB")) {
+         RGB = ImageData;
+    } else if (!strcmp(from, "HSL")) {
+        RGB.resize(ImageData.size());
+        for (int i = 0; i < ImageData.size(); i+=3) {
+            double H = ImageData[i]/255.0;
+            double S = ImageData[i+1]/255.0;
+            double L = ImageData[i+2]/255.0;
+            const double PI = 3.1416926;
+            double C = (1 - abs(2*L - 1)) * S;
+            double X = C * (1 - abs((int)(H/PI/3)%2 - 1));
+            double m = L - C/2;
+            double R,G,B;
+            if (H >= 0 && H < PI/3) {
+                R = C; G = X; B = 0;
+            } else if (H >= PI/3 && H < 2*PI/3) {
+                R = X; G = C; B = 0;
+            } else if (H >= 2*PI/3 && H < PI) {
+                R = 0; G = C; B = X;
+            } else if (H >= PI && H < 4*PI/3) {
+                R = 0; G = X; B = C;
+            } else if (H >= 4*PI/3 && H < 5*PI/3) {
+                R = X; G = 0; B = C;
+            } else if (H >= 6*PI/3 && H < 2*PI) {
+                R = C; G = 0; B = X;
+            } else {
+                throw std::runtime_error("Error H value out of range!");
+            }
+            RGB[i]   = roundToByte((int)((R+m)*255));
+            RGB[i+1] = roundToByte((int)((G+m)*255));
+            RGB[i+2] = roundToByte((int)((B+m)*255));
+        }
+    } else if (!strcmp(from, "HSV")) {
+        RGB.resize(ImageData.size());
+        for (int i = 0; i < ImageData.size(); i+=3) {
+            double H = ImageData[i]/255.0;
+            double S = ImageData[i+1]/255.0;
+            double V = ImageData[i+2]/255.0;
+            const double PI = 3.1416926;
+            double C = V * S;
+            double X = C * (1 - abs((int)(H / PI/3) % 2 - 1));
+            double m = V - C;
+            double R,G,B;
+            if (H >= 0 && H < PI/3) {
+                R = C; G = X; B = 0;
+            } else if (H >= PI/3 && H < 2*PI/3) {
+                R = X; G = C; B = 0;
+            } else if (H >= 2*PI/3 && H < PI) {
+                R = 0; G = C; B = X;
+            } else if (H >= PI && H < 4*PI/3) {
+                R = 0; G = X; B = C;
+            } else if (H >= 4*PI/3 && H < 5*PI/3) {
+                R = X; G = 0; B = C;
+            } else if (H >= 6*PI/3 && H < 2*PI) {
+                R = C; G = 0; B = X;
+            } else {
+                throw std::runtime_error("Error H value out of range!");
+            }
+            RGB[i]   = roundToByte((int)((R+m)*255));
+            RGB[i+1] = roundToByte((int)((G+m)*255));
+            RGB[i+2] = roundToByte((int)((B+m)*255));
+        }
+    } else if (!strcmp(from, "YCbCr.601")) {
+        RGB.resize(ImageData.size());
+        for (int i = 0; i < ImageData.size(); i+=3) {
+            int Y = ImageData[i];
+            int Cb = ImageData[i+1];
+            int Cr = ImageData[i+2];
+            RGB[i]   = roundToByte((int)(298.082*Y/256                  + 408.583*Cr/256 - 222.921));
+            RGB[i+1] = roundToByte((int)(298.082*Y/256 - 100.291*Cb/256 - 208.120*Cr/256 + 135.576));
+            RGB[i+2] = roundToByte((int)(298.082*Y/256 + 516.412*Cb/256                  - 276.836));
+        }
+    } else if (!strcmp(from, "YCbCr.709")) {
+        RGB.resize(ImageData.size());
+        for (int i = 0; i < ImageData.size(); i+=3) {
+            int Y = ImageData[i];
+            int Cb = ImageData[i+1];
+            int Cr = ImageData[i+2];
+            double Kr = 0.2126;
+            double Kg = 0.7152;
+            double Kb = 0.0722;
+            RGB[i]   = roundToByte((int)(255/219.0*(Y-16) + 255*(2-2*Kr)/224.0*(Cr-128)));
+            RGB[i+1] = roundToByte((int)(255/219.0*(Y-16) - 255/224.0*Kb/Kg*(2-2*Kb)*(Cb-128) - 255/224.0*Kr/Kg*(2-2*Kr)*(Cr-128)));
+            RGB[i+2] = roundToByte((int)(255/219.0*(Y-16) + 255*(2-2*Kb)/224.0*(Cb-128)));
+        }
+    } else if (!strcmp(from, "YCoCg")) {
+        RGB.resize(ImageData.size());
+        for (int i = 0; i < ImageData.size(); i+=3) {
+            double Y = ImageData[i]/255.0;
+            double Co = ImageData[i+1]/255.0;
+            double Cg = ImageData[i+2]/255.0;
+            RGB[i]   = roundToByte((int)((Y+Co-Cg)*255));
+            RGB[i+1] = roundToByte((int)((Y+Cg)*255));
+            RGB[i+2] = roundToByte((int)((Y-Co-Cg)*255));
+        }
+    } else if (!strcmp(from, "CMY")) {
+        RGB.resize(ImageData.size());
+        for (int i = 0; i < ImageData.size(); i+=3) {
+            double C = ImageData[i]/255.0;
+            double M = ImageData[i+1]/255.0;
+            double Y = ImageData[i+2]/255.0;
+            RGB[i]   = roundToByte((int)((1-C)*255));
+            RGB[i+1] = roundToByte((int)((1-M)*255));
+            RGB[i+2] = roundToByte((int)((1-Y)*255));
+        }
+    } else {
+        throw std::runtime_error("Error, unsupported input color space!");
+    }
+
+    if (!strcmp(to, "RGB")) {
+        result = RGB;
+    } else if (!strcmp(to, "HSL")) {
+        result.resize(RGB.size()); // to HSL
+        for (int i = 0; i < RGB.size(); i+=3) {
+            double R = RGB[i]/255.0;
+            double G = RGB[i + 1]/255.0;
+            double B = RGB[i + 2]/255.0;
+            double Cmin = std::min(R, std::min(G, B));
+            double Cmax = std::max(R, std::max(G, B));
+            double delta = Cmax - Cmin;
+            double L = (Cmax + Cmin)/2.0;
+            double S = 0, H = 0;
+            const double PI = 3.1416926;
+            if (delta < 1e-7) {
+                S = 0;
+            } else {
+                S = delta/(1 - abs(2*L - 1));
+            }
+            if (delta < 1e-7) {
+                H = 0;
+            } else if (Cmax == R) {
+                H = PI/3*((int)((G-B)/delta)%6);
+            } else if (Cmax == G) {
+                H = PI/3*((B-R)/delta + 2);
+            } else if (Cmax == B) {
+                H = PI/3*((R-G)/delta + 4);
+            } else {
+                throw std::runtime_error("Error unable to convert to HSL");
+            }
+            result[i] = roundToByte((int)(H*255));
+            result[i+1] = roundToByte((int)(S*255));
+            result[i+2] = roundToByte((int)(L*255));
+        }
+    } else if (!strcmp(to, "HSV")) {
+        result.resize(RGB.size()); // to HSL
+        for (int i = 0; i < RGB.size(); i+=3) {
+            double R = RGB[i]/255.0;
+            double G = RGB[i + 1]/255.0;
+            double B = RGB[i + 2]/255.0;
+            double Cmin = std::min(R, std::min(G, B));
+            double Cmax = std::max(R, std::max(G, B));
+            double delta = Cmax - Cmin;
+            double V = Cmax;
+            double S = 0, H = 0;
+            const double PI = 3.1416926;
+            if (Cmax < 1e-7) {
+                S = 0;
+            } else {
+                S = delta/Cmax;
+            }
+            if (delta < 1e-7) {
+                H = 0;
+            } else if (Cmax == R) {
+                H = PI/3*((int)((G-B)/delta)%6);
+            } else if (Cmax == G) {
+                H = PI/3*((B-R)/delta + 2);
+            } else if (Cmax == B) {
+                H = PI/3*((R-G)/delta + 4);
+            } else {
+                throw std::runtime_error("Error unable to convert to HSL");
+            }
+            result[i] = roundToByte((int)(H*255));
+            result[i+1] = roundToByte((int)(S*255));
+            result[i+2] = roundToByte((int)(V*255));
+        }
+    } else if (!strcmp(to, "YCbCr.601")) {
+        result.resize(RGB.size()); // to YCbCr.601
+        for (int i = 0; i < RGB.size(); i+=3) {
+            int R = RGB[i];
+            int G = RGB[i + 1];
+            int B = RGB[i + 2];
+            result[i]   = roundToByte((int)(16.0  +  65.738*R/256 + 129.057*G/256 +  25.064*B/256)); // Y
+            result[i+1] = roundToByte((int)(128.0 -  37.945*R/256 -  74.494*G/256 + 112.439*B/256)); // Cb
+            result[i+2] = roundToByte((int)(128.0 + 112.439*R/256 -  94.154*G/256 -  18.285*B/256)); // Cr
+        }
+    } else if (!strcmp(to, "YCbCr.709")) {
+        result.resize(RGB.size()); // to YCbCr.709
+        for (int i = 0; i < RGB.size(); i+=3) {
+            int R = RGB[i];
+            int G = RGB[i + 1];
+            int B = RGB[i + 2];
+            result[i]   = roundToByte((int)(16.0  +  46.742*R/256 + 157.243*G/256 +  15.874*B/256)); // Y
+            result[i+1] = roundToByte((int)(128.0 -  25.765*R/256 -  86.675*G/256 + 112.439*B/256)); // Cb
+            result[i+2] = roundToByte((int)(128.0 + 112.439*R/256 -  102.129*G/256 -  10.31*B/256)); // Cr
+        }
+    } else if (!strcmp(to, "YCoCg")) {
+        result.resize(RGB.size()); // to YCoCg
+        for (int i = 0; i < RGB.size(); i+=3) {
+            double R = RGB[i]/255.0;
+            double G = RGB[i + 1]/255.0;
+            double B = RGB[i + 2]/255.0;
+            result[i]   = roundToByte((int)((R/4.0 + G/2.0 + B/4.0)*255)); // Y
+            result[i+1] = roundToByte((int)((R/2.0 - B/2.0 + 0.5)*255)); // Co
+            result[i+2] = roundToByte((int)((-R/4.0 + G/2.0 - B/4.0 + 0.5)*255)); // Cg
+        }
+    } else if (!strcmp(to, "CMY")) {
+        result.resize(RGB.size()); // to YCoCg
+        for (int i = 0; i < RGB.size(); i+=3) {
+            double R = RGB[i]/255.0;
+            double G = RGB[i + 1]/255.0;
+            double B = RGB[i + 2]/255.0;
+            result[i]   = roundToByte((int)((1.0-R)*255)); // C
+            result[i+1] = roundToByte((int)((1.0-G)*255)); // M
+            result[i+2] = roundToByte((int)((1.0-B)*255)); // Y
+        }
+    } else {
+        throw std::runtime_error("Error, unsupported input color space!");
+    }
+    ImageData = result;
 }
