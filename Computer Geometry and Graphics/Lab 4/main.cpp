@@ -43,12 +43,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-//        std::cout << "inputFileName: " << inputFileName << std::endl;
-//        std::cout << "outputFileName: " << outputFileName << std::endl;
-//        std::cout << "inputColorSpace: " << inputColorSpace << std::endl;
-//        std::cout << "inputCount: " << inputCount << std::endl;
-//        std::cout << "outputColorSpace: " << outputColorSpace << std::endl;
-//        std::cout << "outputCount: " << outputCount << std::endl;
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return 1;
@@ -57,6 +51,10 @@ int main(int argc, char* argv[]) {
     if (inputCount == 3) {
         try {
             int l = strlen(inputFileName)-4;
+            if (inputFileName[l]!='.' || inputFileName[l+1]!='p' || inputFileName[l+2]!='g' || inputFileName[l+3]!='m') {
+                std::cerr << "Error, invalid input format";
+                return 1;
+            }
             char* newInputName = new char[l];
             strncpy(newInputName, inputFileName, l);
             char *input1 = strdup(newInputName);
@@ -75,6 +73,11 @@ int main(int argc, char* argv[]) {
         }
     } else if (inputCount == 1){
         try {
+            int l = strlen(inputFileName)-4;
+            if (inputFileName[l]!='.' || inputFileName[l+1]!='p' || inputFileName[l+2]!='p' || inputFileName[l+3]!='m') {
+                std::cerr << "Error, invalid input format";
+                return 1;
+            }
             main = new PNMImage(inputFileName);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
@@ -98,6 +101,10 @@ int main(int argc, char* argv[]) {
         PNMImage im3 = PNMImage::pull3rdByte(*main);
         try {
             int l = strlen(outputFileName) - 4;
+            if (outputFileName[l]!='.' || outputFileName[l+1]!='p' || outputFileName[l+2]!='g' || outputFileName[l+3]!='m') {
+                std::cerr << "Error, invalid input format";
+                return 1;
+            }
             char *newOutputName = new char[l];
             std::strncpy(newOutputName, outputFileName, l);
             char *output1 = strdup(newOutputName);
@@ -115,6 +122,11 @@ int main(int argc, char* argv[]) {
         }
     } else if (outputCount == 1) {
         try {
+            int l = strlen(outputFileName) - 4;
+            if (outputFileName[l]!='.' || outputFileName[l+1]!='p' || outputFileName[l+2]!='g' || outputFileName[l+3]!='m') {
+                std::cerr << "Error, invalid input format";
+                return 1;
+            }
             main->Export(outputFileName);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
