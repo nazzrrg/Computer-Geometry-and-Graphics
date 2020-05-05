@@ -470,8 +470,8 @@ double PNMImage::closestPaletteColor(byte px, byte bitRate) {
 }
 
 void PNMImage::ditherNone(byte bitRate, double gamma) {
-    for (int i = 0; i < Width; ++i) {
-        for (int j = 0; j < Height; ++j) {
+    for (int i = 0; i < Height; ++i) { // fix 1
+        for (int j = 0; j < Width; ++j) {
             double value = decodeGamma(pixel(i, j)/255.0, gamma);
             value = std::min(std::max(value, 0.0), 1.0);
             double newPaletteColor = closestPaletteColor((byte)(value*255), bitRate);
@@ -574,9 +574,9 @@ void PNMImage::ditherJJN(byte bitRate, double gamma) {
             for (int ie = 0; ie < 3; ie++) {
                 for (int je = 0; je < 5; je++) {
                     if (i + ie >= Height || j + (je - 2) >= Width || j + (je - 2) < 0)
-                        break;
-                    if (ie == 0 && je <= 2)
-                        break;
+                        continue; // fix 3
+                    if (ie == 0 && je < 3)
+                        continue;
 
                     getError(i + ie, j + (je - 2)) += error * matrixJJN[ie][je];
                 }
@@ -612,9 +612,9 @@ void PNMImage::ditherSierra(byte bitRate, double gamma) {
             for (int ie = 0; ie < 3; ie++) {
                 for (int je = 0; je < 5; je++) {
                     if (i + ie >= Height || j + (je - 2) >= Width || j + (je - 2) < 0)
-                        break;
+                        continue; // fix 3
                     if (ie == 0 && je <= 2)
-                        break;
+                        continue;
 
                     getError(i + ie, j + (je - 2)) += error * matrixSierra3[ie][je];
                 }
@@ -650,9 +650,9 @@ void PNMImage::ditherAtkinson(byte bitRate, double gamma) {
             for (int ie = 0; ie < 3; ie++) {
                 for (int je = 0; je < 5; je++) {
                     if (i + ie >= Height || j + (je - 2) >= Width || j + (je - 2) < 0)
-                        break;
+                        continue; // fix 3
                     if (ie == 0 && je <= 2)
-                        break;
+                        continue;
 
                     getError(i + ie, j + (je - 2)) += error * matrixAtkinson[ie][je] / 8.0;
                 }
@@ -662,10 +662,14 @@ void PNMImage::ditherAtkinson(byte bitRate, double gamma) {
 }
 
 void PNMImage::ditherHalftone(byte bitRate, double gamma) {
-    const double halftoneMatrix[4][4] = {7 / 16.0, 13 / 16.0, 11 / 16.0, 4 / 16.0,
-                                          12 / 16.0, 16 / 16.0, 14 / 16.0, 8 / 16.0,
-                                          10 / 16.0, 15 / 16.0, 6 / 16.0, 2 / 16.0,
-                                          5 / 16.0, 9 / 16.0, 3 / 16.0, 1 / 16.0};
+//    const double halftoneMatrix[4][4] = {7 / 16.0, 13 / 16.0, 11 / 16.0, 4 / 16.0,
+//                                          12 / 16.0, 16 / 16.0, 14 / 16.0, 8 / 16.0,
+//                                          10 / 16.0, 15 / 16.0, 6 / 16.0, 2 / 16.0,
+//                                          5 / 16.0, 9 / 16.0, 3 / 16.0, 1 / 16.0};
+    const double halftoneMatrix[4][4] = {7 / 17.0, 13 / 17.0, 11 / 17.0, 4 / 17.0, // fix 2
+                                         12 / 17.0, 16 / 17.0, 14 / 17.0, 8 / 17.0,
+                                         10 / 17.0, 15 / 17.0, 6 / 17.0, 2 / 17.0,
+                                         5 / 17.0, 9 / 17.0, 3 / 17.0, 1 / 17.0};
     for (int i = 0; i < Height; i++) {
         for (int j = 0; j < Width; j++) {
             double value = decodeGamma(pixel(i, j)/255.0, gamma);

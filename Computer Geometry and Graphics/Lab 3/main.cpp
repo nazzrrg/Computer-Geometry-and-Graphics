@@ -86,5 +86,13 @@ int main(int argc, char* argv[]) {
         std::cerr << e.what() << std::endl;
         return 1;
     }
+    try {
+        delete inputFileName; // fix 4 ?
+        delete outputFileName;
+        delete picture;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
     return 0;
 }

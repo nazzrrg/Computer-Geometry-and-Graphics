@@ -32,8 +32,6 @@ private:
 
     byte& pixel(int, int);
 
-
-
     static double closestPaletteColor(byte px, byte bitRate);
 
     static double decodeGamma(double value, double gamma);
@@ -41,6 +39,7 @@ private:
     static double encodeGamma(double value, double gamma);
 public:
     void fillGradient(double);
+
     static std::vector<byte> ReadBinary(const char*, uint64_t);
 
     static void WriteBinary(const char*, const std::vector<byte>&);
