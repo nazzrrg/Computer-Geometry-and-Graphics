@@ -7,8 +7,8 @@ This simple console application allows you to draw lines of various thickness on
 
 | Argument | Format | Description |
 |---|---|---|
-|**<input_file_name>**|*Path ending with .npm file*|Name of the input file|
-|**<output_file_name>**|*Path ending with .npm file*|Name of the outnput file|
+|**<input_file_name>**|*Path ending with .pnm file*|Name of the input file|
+|**<output_file_name>**|*Path ending with .pnm file*|Name of the outnput file|
 |**\<brightness>**|*Number between 0 and 255*|0 - minimum, 255 - maximum|
 |**\<thickness>**|*Positive real number*||
 |**\<x0> \<y0>**|*Positive real numbers*|Start coordinates|
