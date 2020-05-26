@@ -662,10 +662,6 @@ void PNMImage::ditherAtkinson(byte bitRate, double gamma) {
 }
 
 void PNMImage::ditherHalftone(byte bitRate, double gamma) {
-//    const double halftoneMatrix[4][4] = {7 / 16.0, 13 / 16.0, 11 / 16.0, 4 / 16.0,
-//                                          12 / 16.0, 16 / 16.0, 14 / 16.0, 8 / 16.0,
-//                                          10 / 16.0, 15 / 16.0, 6 / 16.0, 2 / 16.0,
-//                                          5 / 16.0, 9 / 16.0, 3 / 16.0, 1 / 16.0};
     const double halftoneMatrix[4][4] = {7 / 17.0, 13 / 17.0, 11 / 17.0, 4 / 17.0, // fix 2
                                          12 / 17.0, 16 / 17.0, 14 / 17.0, 8 / 17.0,
                                          10 / 17.0, 15 / 17.0, 6 / 17.0, 2 / 17.0,

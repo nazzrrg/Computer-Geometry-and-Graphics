@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
         x1 = std::stod(argv[7]);
         y1 = std::stod(argv[8]);
         gammaDefined = argc == 10;
-        gamma = gammaDefined ? std::stof(argv[9]) : 2.2;
+        gamma = gammaDefined ? std::stof(argv[9]) : 0.0;
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return 1;

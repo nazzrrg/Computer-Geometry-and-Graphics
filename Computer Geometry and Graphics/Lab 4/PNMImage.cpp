@@ -1024,7 +1024,7 @@ void PNMImage::convertColorSpace(char *from, char *to) {
             result[i+2] = roundToByte((int)((-R/4.0 + G/2.0 - B/4.0 + 0.5)*255)); // Cg
         }
     } else if (!strcmp(to, "CMY")) {
-        result.resize(RGB.size()); // to YCoCg
+        result.resize(RGB.size()); // to CMY
         for (int i = 0; i < RGB.size(); i+=3) {
             double R = RGB[i]/255.0;
             double G = RGB[i + 1]/255.0;
