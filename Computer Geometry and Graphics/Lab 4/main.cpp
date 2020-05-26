@@ -150,18 +150,9 @@ int main(int argc, char* argv[]) {
             }
             std::string newOutputName(outputFileName);
             newOutputName = newOutputName.substr(0, newOutputName.find_last_of('.'));
-//            char *output1 = strdup(newOutputName.c_str());
-//            char *output2 = strdup(newOutputName.c_str());
-//            char *output3 = strdup(newOutputName.c_str());
-//            strcat(output1, "_1.pgm");
-//            strcat(output2, "_2.pgm");
-//            strcat(output3, "_3.pgm");
             im1.Export((newOutputName+"_1.pgm").c_str());
             im2.Export((newOutputName+"_2.pgm").c_str());
             im3.Export((newOutputName+"_3.pgm").c_str());
-//            delete output1;
-//            delete output2;
-//            delete output3;
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
             delete inputColorSpace;
