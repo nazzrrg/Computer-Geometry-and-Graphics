@@ -66,20 +66,20 @@ int main(int argc, char* argv[]) {
                 return 1;
             }
             std::string newIntputName(inputFileName);
-            newIntputName = newIntputName.substr(0, newIntputName.find('.'));
-            char *input1 = strdup(newIntputName.c_str());
-            char *input2 = strdup(newIntputName.c_str());
-            char *input3 = strdup(newIntputName.c_str());
-            strcat(input1, "_1.pgm");
-            strcat(input2, "_2.pgm");
-            strcat(input3, "_3.pgm");
-            PNMImage im1(input1);
-            PNMImage im2(input2);
-            PNMImage im3(input3);
+            newIntputName = newIntputName.substr(0, newIntputName.find_last_of('.'));
+//            char *input1 = strdup(newIntputName.c_str());
+//            char *input2 = strdup(newIntputName.c_str());
+//            char *input3 = strdup(newIntputName.c_str());
+//            strcat(input1, "_1.pgm");
+//            strcat(input2, "_2.pgm");
+//            strcat(input3, "_3.pgm");
+            PNMImage im1((newIntputName + "_1.pgm").c_str());
+            PNMImage im2((newIntputName + "_2.pgm").c_str());
+            PNMImage im3((newIntputName + "_3.pgm").c_str());
             main = new PNMImage(PNMImage::mergeBytes(im1, im2, im3));
-            delete input1;
-            delete input2;
-            delete input3;
+//            delete input1;
+//            delete input2;
+//            delete input3;
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
             delete inputColorSpace;
